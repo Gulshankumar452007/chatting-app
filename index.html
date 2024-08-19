@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat App</title>
+    <title>Enhanced Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,11 +39,20 @@
             border-radius: 10px;
             background-color: #e1ffc7;
             max-width: 70%;
+            position: relative;
         }
 
         .message.user {
             background-color: #d3d3f5;
             align-self: flex-end;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
         }
 
         .input-container {
@@ -73,10 +82,32 @@
         button:hover {
             background-color: #218838;
         }
+
+        .header {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .clear-chat {
+            background-color: #dc3545;
+            margin-left: auto;
+            margin-right: 10px;
+        }
+
+        .clear-chat:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
     <div class="chat-container">
+        <div class="header">
+            <span id="chat-title">Chat App</span>
+            <button class="clear-chat" onclick="clearChat()">Clear Chat</button>
+        </div>
         <div id="chat-box" class="chat-box">
         </div>
         <div class="input-container">
@@ -86,6 +117,14 @@
     </div>
 
     <script>
+        let username = prompt("Enter your name:", "You");
+
+        if (username) {
+            document.getElementById('chat-title').textContent = username + "'s Chat";
+        } else {
+            username = "You";
+        }
+
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
             const messageText = messageInput.value.trim();
@@ -96,11 +135,40 @@
                 messageDiv.classList.add('message', 'user');
                 messageDiv.textContent = messageText;
 
+                const timestamp = document.createElement('span');
+                timestamp.classList.add('timestamp');
+                timestamp.textContent = new Date().toLocaleTimeString();
+                messageDiv.appendChild(timestamp);
+
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
 
                 messageInput.value = '';
+
+                setTimeout(() => {
+                    receiveMessage("Friend", "Hello! This is a reply.");
+                }, 1000);
             }
+        }
+
+        function receiveMessage(sender, messageText) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `${sender}: ${messageText}`;
+
+            const timestamp = document.createElement('span');
+            timestamp.classList.add('timestamp');
+            timestamp.textContent = new Date().toLocaleTimeString();
+            messageDiv.appendChild(timestamp);
+
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function clearChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
         }
     </script>
 </body>
