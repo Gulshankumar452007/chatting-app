@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Chat App with Invite Feature</title>
+    <title>Chat App with Groups and Invites</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -101,14 +101,14 @@
             background-color: #c82333;
         }
 
-        .invite-container {
+        .invite-container, .group-container {
             display: flex;
             padding: 10px;
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
         }
 
-        .invite-container input {
+        .invite-container input, .group-container input {
             flex-grow: 1;
             padding: 10px;
             border: 1px solid #ddd;
@@ -116,7 +116,7 @@
             outline: none;
         }
 
-        .invite-container button {
+        .invite-container button, .group-container button {
             padding: 10px 20px;
             border: none;
             background-color: #007bff;
@@ -126,7 +126,7 @@
             margin-left: 10px;
         }
 
-        .invite-container button:hover {
+        .invite-container button:hover, .group-container button:hover {
             background-color: #0069d9;
         }
     </style>
@@ -146,6 +146,9 @@
         <div class="invite-container">
             <input type="email" id="friend-email" placeholder="Enter friend's email">
             <button onclick="sendInvite()">Invite Friend</button>
+        </div>
+        <div class="group-container">
+            <button onclick="createGroup()">Create Group</button>
         </div>
     </div>
 
@@ -211,6 +214,22 @@
                 document.getElementById('friend-email').value = '';
             } else {
                 alert('Please enter a valid email address.');
+            }
+        }
+
+        function createGroup() {
+            const groupName = prompt("Enter group name:");
+            if (groupName) {
+                const members = prompt("Enter group members' emails (comma-separated):");
+                if (members) {
+                    alert(`Group '${groupName}' created with members: ${members}`);
+                    document.getElementById('chat-title').textContent = `${groupName} Group Chat`;
+                    clearChat();
+                } else {
+                    alert("No members were added.");
+                }
+            } else {
+                alert("Group creation cancelled.");
             }
         }
     </script>
