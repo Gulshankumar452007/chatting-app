@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Chat App</title>
+    <title>Enhanced Chat App with Invite Feature</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,6 +100,35 @@
         .clear-chat:hover {
             background-color: #c82333;
         }
+
+        .invite-container {
+            display: flex;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        .invite-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .invite-container button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .invite-container button:hover {
+            background-color: #0069d9;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +142,10 @@
         <div class="input-container">
             <input type="text" id="message-input" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
+        </div>
+        <div class="invite-container">
+            <input type="email" id="friend-email" placeholder="Enter friend's email">
+            <button onclick="sendInvite()">Invite Friend</button>
         </div>
     </div>
 
@@ -169,6 +202,16 @@
         function clearChat() {
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
+        }
+
+        function sendInvite() {
+            const friendEmail = document.getElementById('friend-email').value.trim();
+            if (friendEmail !== '') {
+                alert(`An invite has been sent to ${friendEmail}`);
+                document.getElementById('friend-email').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
         }
     </script>
 </body>
