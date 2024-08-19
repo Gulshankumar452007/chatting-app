@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Groups, Invites, and Emoji Reactions</title>
+    <title>Advanced Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            transition: background-color 0.3s;
         }
 
         .chat-container {
@@ -24,6 +25,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            transition: background-color 0.3s;
         }
 
         .chat-box {
@@ -31,6 +33,8 @@
             padding: 20px;
             overflow-y: auto;
             border-bottom: 1px solid #ddd;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s;
         }
 
         .message {
@@ -40,6 +44,7 @@
             background-color: #e1ffc7;
             max-width: 70%;
             position: relative;
+            transition: background-color 0.3s;
         }
 
         .message.user {
@@ -62,10 +67,23 @@
             font-size: 1.2em;
         }
 
+        .message-options {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            display: none;
+            cursor: pointer;
+        }
+
+        .message:hover .message-options {
+            display: block;
+        }
+
         .input-container {
             display: flex;
             padding: 10px;
             background-color: #f9f9f9;
+            transition: background-color 0.3s;
         }
 
         input[type="text"], input[type="email"] {
@@ -96,6 +114,14 @@
             color: white;
             text-align: center;
             font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-mode-toggle {
+            cursor: pointer;
+            font-size: 1.5em;
         }
 
         .clear-chat {
@@ -113,6 +139,7 @@
             padding: 10px;
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
+            transition: background-color 0.3s;
         }
 
         .invite-container input, .group-container input {
@@ -158,18 +185,58 @@
             background-color: #ddd;
             border-radius: 5px;
         }
+
+        .typing-indicator {
+            font-size: 0.9em;
+            color: #666;
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .chat-box {
+            background-color: #1f1f1f;
+        }
+
+        .dark-mode .message {
+            background-color: #2c2c2c;
+        }
+
+        .dark-mode .input-container,
+        .dark-mode .invite-container,
+        .dark-mode .group-container {
+            background-color: #1f1f1f;
+        }
+
+        .dark-mode .header {
+            background-color: #1f1f1f;
+        }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="header">
             <span id="chat-title">Chat App</span>
+            <span class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</span>
             <button class="clear-chat" onclick="clearChat()">Clear Chat</button>
         </div>
         <div id="chat-box" class="chat-box">
+            <div id="typing-indicator" class="typing-indicator" style="display:none;">Friend is typing...</div>
         </div>
         <div class="input-container">
-            <input type="text" id="message-input" placeholder="Type your message...">
+            <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
         </div>
         <div class="invite-container">
@@ -189,6 +256,14 @@
             document.getElementById('chat-title').textContent = username + "'s Chat";
         } else {
             username = "You";
+        }
+
+        let isDarkMode = false;
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.dark-mode-toggle').textContent = isDarkMode ? '☀️' : '🌙';
         }
 
         function sendMessage() {
@@ -213,89 +288,61 @@
                 };
                 messageDiv.appendChild(reactionBtn);
 
+                const messageOptions = document.createElement('span');
+                messageOptions.classList.add('message-options');
+                messageOptions.textContent = "⋮";
+                messageOptions.onclick = function () {
+                    showEditDeleteOptions(messageDiv);
+                };
+                messageDiv.appendChild(messageOptions);
+
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
+                messageInput.value = '';  
 
-                messageInput.value = '';
-
-                setTimeout(() => {
-                    receiveMessage("Friend", "Hello! This is a reply.");
-                }, 1000);
+                setTimeout(() => updateMessageStatus(messageDiv, 'Delivered'), 1000);
+                setTimeout(() => updateMessageStatus(messageDiv, 'Read'), 2000);
             }
-        }
-
-        function receiveMessage(sender, messageText) {
-            const chatBox = document.getElementById('chat-box');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.textContent = `${sender}: ${messageText}`;
-
-            const timestamp = document.createElement('span');
-            timestamp.classList.add('timestamp');
-            timestamp.textContent = new Date().toLocaleTimeString();
-            messageDiv.appendChild(timestamp);
-
-            const reactionBtn = document.createElement('button');
-            reactionBtn.textContent = "😊";
-            reactionBtn.onclick = function () {
-                showEmojiPicker(messageDiv);
-            };
-            messageDiv.appendChild(reactionBtn);
-
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function clearChat() {
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = '';
         }
 
         function sendInvite() {
-            const friendEmail = document.getElementById('friend-email').value.trim();
-            const friendName = document.getElementById('friend-name').value.trim();
-            if (friendEmail !== '' && friendName !== '') {
-                alert(`An invite has been sent to ${friendName} (${friendEmail})`);
-                document.getElementById('friend-email').value = '';
-                document.getElementById('friend-name').value = '';
-            } else {
-                alert('Please enter both a valid email address and a name.');
-            }
+            const email = document.getElementById('friend-email').value;
+            const name = document.getElementById('friend-name').value;
+            alert('Invite sent to ' + name + ' (' + email + ')');
         }
 
         function createGroup() {
-            const groupName = prompt("Enter group name:");
-            if (groupName) {
-                const members = prompt("Enter group members' emails (comma-separated):");
-                if (members) {
-                    alert(`Group '${groupName}' created with members: ${members}`);
-                    document.getElementById('chat-title').textContent = `${groupName} Group Chat`;
-                    clearChat();
-                } else {
-                    alert("No members were added.");
-                }
-            } else {
-                alert("Group creation cancelled.");
+            const groupName = prompt("Enter Group Name:");
+            const emails = prompt("Enter member emails (comma-separated):");
+
+            if (groupName && emails) {
+                document.getElementById('chat-title').textContent = groupName + " Group Chat";
+                alert('Group created: ' + groupName + '\nMembers: ' + emails);
             }
         }
 
         function showEmojiPicker(messageDiv) {
-            const emojiPicker = document.createElement('div');
-            emojiPicker.classList.add('emoji-picker');
+            let emojiPicker = messageDiv.querySelector('.emoji-picker');
+            if (emojiPicker) {
+                emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+            } else {
+                emojiPicker = document.createElement('div');
+                emojiPicker.classList.add('emoji-picker');
 
-            const emojis = ['😊', '😂', '😍', '😢', '😡', '👍', '👎', '❤️'];
-            emojis.forEach(emoji => {
-                const emojiSpan = document.createElement('span');
-                emojiSpan.textContent = emoji;
-                emojiSpan.onclick = function () {
-                    addReaction(messageDiv, emoji);
-                    emojiPicker.remove();
-                };
-                emojiPicker.appendChild(emojiSpan);
-            });
+                const emojis = ['😊', '😂', '❤️', '👍', '😢', '😮'];
+                emojis.forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.textContent = emoji;
+                    emojiSpan.onclick = function () {
+                        addReaction(messageDiv, emoji);
+                        emojiPicker.remove();
+                    };
+                    emojiPicker.appendChild(emojiSpan);
+                });
 
-            messageDiv.appendChild(emojiPicker);
-            emojiPicker.style.display = 'block';
+                messageDiv.appendChild(emojiPicker);
+                emojiPicker.style.display = 'block';
+            }
         }
 
         function addReaction(messageDiv, emoji) {
@@ -306,6 +353,38 @@
                 messageDiv.appendChild(reactionDiv);
             }
             reactionDiv.textContent = emoji;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('typing-indicator').style.display = 'none';
+            }, 1000);
+        }
+
+        function showEditDeleteOptions(messageDiv) {
+            const option = prompt("Type 'edit' to edit or 'delete' to delete the message:", "");
+            if (option === 'edit') {
+                const newText = prompt("Edit your message:", messageDiv.textContent);
+                if (newText) {
+                    messageDiv.childNodes[0].nodeValue = newText;
+                }
+            } else if (option === 'delete') {
+                messageDiv.remove();
+            }
+        }
+
+        function updateMessageStatus(messageDiv, status) {
+            const statusSpan = document.createElement('span');
+            statusSpan.classList.add('status');
+            statusSpan.textContent = status;
+            messageDiv.appendChild(statusSpan);
+        }
+
+        function clearChat() {
+            if (confirm("Are you sure you want to clear the chat?")) {
+                document.getElementById('chat-box').innerHTML = '';
+            }
         }
     </script>
 </body>
