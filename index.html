@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat App with Voice Call</title>
+    <title>Advanced Chat App with Group Voice Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -225,7 +225,6 @@
             background-color: #1f1f1f;
         }
 
-        /* Voice Call Modal */
         .call-modal {
             display: none;
             position: fixed;
@@ -300,12 +299,13 @@
         </div>
         <div class="group-container">
             <button onclick="createGroup()">Create Group</button>
+            <button onclick="startGroupVoiceCall()">Start Group Call</button>
         </div>
     </div>
 
     <div id="call-modal" class="call-modal">
         <div class="call-modal-content">
-            <h2>Incoming Call...</h2>
+            <h2 id="call-modal-title">Incoming Call...</h2>
             <button class="accept" onclick="acceptCall()">Accept</button>
             <button class="decline" onclick="declineCall()">Decline</button>
         </div>
@@ -438,6 +438,12 @@
         }
 
         function startVoiceCall() {
+            document.getElementById('call-modal-title').textContent = 'Incoming Call...';
+            document.getElementById('call-modal').style.display = 'flex';
+        }
+
+        function startGroupVoiceCall() {
+            document.getElementById('call-modal-title').textContent = 'Incoming Group Call...';
             document.getElementById('call-modal').style.display = 'flex';
         }
 
