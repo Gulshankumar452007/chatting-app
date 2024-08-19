@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat App</title>
+    <title>Advanced Chat App with Voice Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,6 +26,7 @@
             display: flex;
             flex-direction: column;
             transition: background-color 0.3s;
+            position: relative;
         }
 
         .chat-box {
@@ -223,6 +224,58 @@
         .dark-mode .header {
             background-color: #1f1f1f;
         }
+
+        /* Voice Call Modal */
+        .call-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .call-modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .call-modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .call-modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .call-modal-content .accept {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .call-modal-content .accept:hover {
+            background-color: #218838;
+        }
+
+        .call-modal-content .decline {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .call-modal-content .decline:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -238,6 +291,7 @@
         <div class="input-container">
             <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
+            <button onclick="startVoiceCall()">📞</button>
         </div>
         <div class="invite-container">
             <input type="email" id="friend-email" placeholder="Enter friend's email">
@@ -249,56 +303,48 @@
         </div>
     </div>
 
+    <div id="call-modal" class="call-modal">
+        <div class="call-modal-content">
+            <h2>Incoming Call...</h2>
+            <button class="accept" onclick="acceptCall()">Accept</button>
+            <button class="decline" onclick="declineCall()">Decline</button>
+        </div>
+    </div>
+
     <script>
-        let username = prompt("Enter your name:", "You");
-
-        if (username) {
-            document.getElementById('chat-title').textContent = username + "'s Chat";
-        } else {
-            username = "You";
-        }
-
-        let isDarkMode = false;
-
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode');
-            document.querySelector('.dark-mode-toggle').textContent = isDarkMode ? '☀️' : '🌙';
-        }
-
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
             const messageText = messageInput.value.trim();
-
             if (messageText !== '') {
                 const chatBox = document.getElementById('chat-box');
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'user');
                 messageDiv.textContent = messageText;
 
-                const timestamp = document.createElement('span');
+                const timestamp = document.createElement('div');
                 timestamp.classList.add('timestamp');
                 timestamp.textContent = new Date().toLocaleTimeString();
                 messageDiv.appendChild(timestamp);
 
-                const reactionBtn = document.createElement('button');
-                reactionBtn.textContent = "😊";
-                reactionBtn.onclick = function () {
-                    showEmojiPicker(messageDiv);
-                };
-                messageDiv.appendChild(reactionBtn);
-
-                const messageOptions = document.createElement('span');
-                messageOptions.classList.add('message-options');
-                messageOptions.textContent = "⋮";
-                messageOptions.onclick = function () {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('message-options');
+                optionsDiv.textContent = '⋮';
+                optionsDiv.onclick = function () {
                     showEditDeleteOptions(messageDiv);
                 };
-                messageDiv.appendChild(messageOptions);
+                messageDiv.appendChild(optionsDiv);
+
+                const emojiButton = document.createElement('span');
+                emojiButton.textContent = '😊';
+                emojiButton.style.cursor = 'pointer';
+                emojiButton.onclick = function () {
+                    showEmojiPicker(messageDiv);
+                };
+                messageDiv.appendChild(emojiButton);
 
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
-                messageInput.value = '';  
+                messageInput.value = '';
 
                 setTimeout(() => updateMessageStatus(messageDiv, 'Delivered'), 1000);
                 setTimeout(() => updateMessageStatus(messageDiv, 'Read'), 2000);
@@ -385,6 +431,24 @@
             if (confirm("Are you sure you want to clear the chat?")) {
                 document.getElementById('chat-box').innerHTML = '';
             }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function startVoiceCall() {
+            document.getElementById('call-modal').style.display = 'flex';
+        }
+
+        function acceptCall() {
+            alert('Call started');
+            document.getElementById('call-modal').style.display = 'none';
+        }
+
+        function declineCall() {
+            alert('Call declined');
+            document.getElementById('call-modal').style.display = 'none';
         }
     </script>
 </body>
