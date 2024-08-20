@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat App</title>
+    <title>Ultimate Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -117,7 +117,6 @@
             color: #888;
         }
 
-        /* Light Theme */
         .theme-light {
             --background-color: #ffffff;
             --text-color: #000000;
@@ -128,7 +127,6 @@
             --button-text: #ffffff;
         }
 
-        /* Dark Theme */
         .theme-dark {
             --background-color: #2c2c2c;
             --text-color: #ffffff;
@@ -139,7 +137,6 @@
             --button-text: #ffffff;
         }
 
-        /* Blue Theme */
         .theme-blue {
             --background-color: #e3f2fd;
             --text-color: #0d47a1;
@@ -150,7 +147,6 @@
             --button-text: #ffffff;
         }
 
-        /* Green Theme */
         .theme-green {
             --background-color: #e8f5e9;
             --text-color: #1b5e20;
@@ -180,7 +176,6 @@
             color: var(--button-text);
         }
 
-        /* Pinned Message Styles */
         .pinned-message {
             padding: 10px;
             margin-bottom: 10px;
@@ -190,7 +185,6 @@
             color: #333;
         }
 
-        /* User Profile Styles */
         .profile-container {
             padding: 10px;
             border: 1px solid #ddd;
@@ -292,33 +286,281 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
+        .reaction-emoji {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: white;
+            padding: 5px;
+            border-radius: 50%;
+            font-size: 16px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .message-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .archive-button {
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .language-selector {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .language-selector select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .encryption-label {
+            font-size: 12px;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .starred-messages {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffff8d;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .auto-reply {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .auto-reply input {
+            width: 80%;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 5px;
+        }
+
+        .auto-reply button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            background-color: #007bff;
+        }
     </style>
 </head>
 <body>
     <div class="container theme-light" id="app-container">
         <div class="chat-header">
-            <h2 id="chat-title">Chat with John Doe</h2>
+            <div class="message-content">
+                <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
+                <h2 id="chat-title">Chat with John Doe</h2>
+            </div>
             <span id="user-status">Status: Available</span>
             <span id="online-status" class="online-status">Online</span>
         </div>
 
         <div class="status-container">
-            <input type="text" id="statusinput" placeholder="Update your status"> 
+            <input type="text" id="status-input" placeholder="Update your status">
             <button onclick="updateStatus()">Update</button>
-        <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
-</div>
-    <div class="theme-selector">
-        <button onclick="setTheme('theme-light')">Light Theme</button>
-        <button onclick="setTheme('theme-dark')">Dark Theme</button>
-        <button onclick="setTheme('theme-blue')">Blue Theme</button>
-        <button onclick="setTheme('theme-green')">Green Theme</button>
+            <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
+        </div>
+
+        <div class="theme-selector">
+            <button onclick="setTheme('theme-light')">Light Theme</button>
+            <button onclick="setTheme('theme-dark')">Dark Theme</button>
+            <button onclick="setTheme('theme-blue')">Blue Theme</button>
+            <button onclick="setTheme('theme-green')">Green Theme</button>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search contacts/groups">
+            <button onclick="searchContacts()">Search</button>
+        </div>
+
+        <div class="encryption-label">End-to-End Encryption Enabled</div>
+
+        <div class="starred-messages" id="starred-message" style="display:none;">⭐ Important Message</div>
+
+        <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
+
+        <div class="chat-box" id="chat-box">
+            <div class="message user">
+                <span class="reaction-emoji">👍</span>
+                Hi, how are you?
+                <div class="timestamp">10:00 AM</div>
+                <div class="read-receipt">Read</div>
+            </div>
+
+            <div class="message user">
+                <span class="reaction-emoji">❤️</span>
+                I'm doing great, thanks!
+                <div class="timestamp">10:05 AM</div>
+                <div class="read-receipt">Read</div>
+            </div>
+        </div>
+
+        <div class="chat-footer">
+            <input type="text" id="message-input" placeholder="Type a message">
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="archiveChat()" class="archive-button">Archive</button>
+        </div>
+
+        <div class="auto-reply">
+            <input type="text" id="auto-reply-input" placeholder="Set Auto-reply for Group">
+            <button onclick="setAutoReply()">Set</button>
+        </div>
+
+        <div class="language-selector">
+            <label for="language">Choose Language:</label>
+            <select id="language">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+            </select>
+        </div>
     </div>
 
-    <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
+    <div class="video-call-modal" id="videoCallModal">
+        <div class="video-call-content">
+            <div class="video-call-header">
+                <h2>Video Call with John Doe</h2>
+                <button onclick="endCall()">End Call</button>
+            </div>
+            <div class="video-call-body">
+            </div>
+            <div class="video-call-footer">
+                <div class="video-call-actions">
+                    <button onclick="toggleMute()">Mute/Unmute</button>
+                    <button onclick="toggleVideo()">Start/Stop Video</button>
+                    <button onclick="shareScreen()">Share Screen</button>
+                    <button onclick="startRecording()">Record</button>
+                    <button onclick="toggleBackgroundBlur()">Background Blur</button>
+                </div>
+                <div class="chat-during-call">
+                    <input type="text" id="chat-during-call-input" placeholder="Chat during call">
+                    <button onclick="sendDuringCall()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="chat-box" id="chat-box">
-        <div class="message user">
-            Hi, how are you?
-            <div class="timestamp">10:00 AM</div>
-            <div class="read-receipt">Read</div>
-        </div
+    <script>
+        function updateStatus() {
+            const status = document.getElementById('status-input').value;
+            document.getElementById('user-status').innerText = `Status: ${status}`;
+        }
+
+        function toggleOnlineStatus() {
+            const status = document.getElementById('online-status');
+            if (status.classList.contains('online-status')) {
+                status.classList.remove('online-status');
+                status.classList.add('offline-status');
+                status.innerText = 'Offline';
+            } else {
+                status.classList.remove('offline-status');
+                status.classList.add('online-status');
+                status.innerText = 'Online';
+            }
+        }
+
+        function setTheme(theme) {
+            document.getElementById('app-container').className = `container ${theme}`;
+        }
+
+        function searchContacts() {
+            const query = document.getElementById('search-input').value;
+            alert(`Searching for: ${query}`);
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message-input').value;
+            alert(`Message sent: ${message}`);
+        }
+
+        function archiveChat() {
+            alert('Chat archived');
+        }
+
+        function setAutoReply() {
+            const reply = document.getElementById('auto-reply-input').value;
+            alert(`Auto-reply set: ${reply}`);
+        }
+
+        function shareScreen() {
+            alert('Screen sharing started');
+        }
+
+        function startRecording() {
+            alert('Recording started');
+        }
+
+        function toggleBackgroundBlur() {
+            alert('Background blur toggled');
+        }
+
+        function sendDuringCall() {
+            const message = document.getElementById('chat-during-call-input').value;
+            alert(`Message sent during call: ${message}`);
+        }
+
+        function toggleMute() {
+            alert('Toggled mute/unmute');
+        }
+
+        function toggleVideo() {
+            alert('Toggled video');
+        }
+
+        function endCall() {
+            document.getElementById('videoCallModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
