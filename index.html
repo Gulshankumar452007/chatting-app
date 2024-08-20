@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Customizable Themes and Voice Notes</title>
+    <title>Chat App with Pinned Messages and Voice Notes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -146,6 +146,7 @@
             --button-text: #ffffff;
         }
 
+        /* Green Theme */
         .theme-green {
             --background-color: #e8f5e9;
             --text-color: #1b5e20;
@@ -174,6 +175,15 @@
             background-color: var(--button-background);
             color: var(--button-text);
         }
+
+        .pinned-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffeb3b;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -190,6 +200,8 @@
             <button onclick="toggleOnlineStatus()">Toggle Online Status</button>
         </div>
 
+        <div id="pinned-message" class="pinned-message" style="display:none;"></div>
+
         <div class="chat-box" id="chat-box">
             <div id="typing-indicator" class="typing-indicator">User is typing...</div>
         </div>
@@ -198,6 +210,7 @@
             <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
             <button onclick="recordVoiceNote()">Voice Note</button>
+            <button onclick="pinMessage()">Pin Message</button>
         </div>
 
         <div class="chat-footer">
@@ -226,11 +239,14 @@
         let typingTimeout;
         let onlineStatus = true; 
         let isRecording = false;
+        let lastMessage = '';
 
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
             const messageText = messageInput.value.trim();
             if (messageText !== '') {
+                lastMessage = messageText;
+
                 const chatBox = document.getElementById('chat-box');
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'user');
@@ -261,7 +277,6 @@
         function showTypingIndicator() {
             const typingIndicator = document.getElementById('typing-indicator');
             typingIndicator.style.display = 'block';
-
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(hideTypingIndicator, 2000);
         }
@@ -367,6 +382,16 @@
             setTimeout(() => {
                 readReceipt.textContent = 'Read';
             }, 2000);
+        }
+
+        function pinMessage() {
+            const pinnedMessageElement = document.getElementById('pinned-message');
+            if (lastMessage) {
+                pinnedMessageElement.textContent = 'Pinned: ' + lastMessage;
+                pinnedMessageElement.style.display = 'block';
+            } else {
+                alert('No message to pin.');
+            }
         }
 
         function setTheme(theme) {
