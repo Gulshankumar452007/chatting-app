@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Pinned Messages and Voice Notes</title>
+    <title>Enhanced Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,7 +24,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .chat-header, .status-container {
+        .chat-header, .status-container, .theme-selector {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -97,6 +97,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-left: 5px;
         }
 
         .typing-indicator {
@@ -146,7 +147,6 @@
             --button-text: #ffffff;
         }
 
-        /* Green Theme */
         .theme-green {
             --background-color: #e8f5e9;
             --text-color: #1b5e20;
@@ -183,6 +183,30 @@
             border-radius: 5px;
             font-weight: bold;
             color: #333;
+        }
+
+        .profile-container {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .profile-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .profile-container button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -233,24 +257,32 @@
             <button onclick="setTheme('theme-blue')">Blue Theme</button>
             <button onclick="setTheme('theme-green')">Green Theme</button>
         </div>
+
+        <div class="profile-container" id="profile-container" style="display:none;">
+            <h3>User Profile</h3>
+            <input type="text" id="profile-name" placeholder="Enter your name...">
+            <input type="text" id="profile-email" placeholder="Enter your email...">
+            <button onclick="updateProfile()">Update Profile</button>
+            <button onclick="toggleProfileVisibility()">Hide Profile</button>
+        </div>
     </div>
 
     <script>
         let typingTimeout;
-        let onlineStatus = true; 
         let isRecording = false;
+        let onlineStatus = true;
         let lastMessage = '';
 
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value.trim();
-            if (messageText !== '') {
-                lastMessage = messageText;
+            const chatBox = document.getElementById('chat-box');
+            const message = messageInput.value.trim();
 
-                const chatBox = document.getElementById('chat-box');
+            if (message !== '') {
+                lastMessage = message;
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'user');
-                messageDiv.textContent = messageText;
+                messageDiv.textContent = message;
 
                 const timestamp = document.createElement('div');
                 timestamp.classList.add('timestamp');
@@ -265,8 +297,6 @@
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
                 messageInput.value = '';
-
-                hideTypingIndicator();
 
                 setTimeout(() => {
                     readReceipt.textContent = 'Read';
@@ -396,6 +426,25 @@
 
         function setTheme(theme) {
             document.getElementById('app-container').className = `container ${theme}`;
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            if (name && email) {
+                alert('Profile updated: ' + name + ' (' + email + ')');
+            } else {
+                alert('Please enter all profile details.');
+            }
+        }
+
+        function toggleProfileVisibility() {
+            const profileContainer = document.getElementById('profile-container');
+            if (profileContainer.style.display === 'none') {
+                profileContainer.style.display = 'block';
+            } else {
+                profileContainer.style.display = 'none';
+            }
         }
     </script>
 </body>
