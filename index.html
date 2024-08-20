@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Customizable Themes</title>
+    <title>Chat App with Customizable Themes and Voice Notes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -197,6 +197,7 @@
         <div class="chat-footer">
             <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
+            <button onclick="recordVoiceNote()">Voice Note</button>
         </div>
 
         <div class="chat-footer">
@@ -224,6 +225,7 @@
     <script>
         let typingTimeout;
         let onlineStatus = true; 
+        let isRecording = false;
 
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
@@ -327,6 +329,44 @@
 
         function startGroupVideoCall() {
             alert('Starting a group video call...');
+        }
+
+        function recordVoiceNote() {
+            if (!isRecording) {
+                isRecording = true;
+                alert('Recording started...');
+                setTimeout(() => {
+                    isRecording = false;
+                    alert('Recording stopped. Voice note sent.');
+                    sendVoiceNote();
+                }, 3000);
+            } else {
+                alert('Already recording...');
+            }
+        }
+
+        function sendVoiceNote() {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'user');
+            messageDiv.textContent = "Voice Note: [audio]";
+
+            const timestamp = document.createElement('div');
+            timestamp.classList.add('timestamp');
+            timestamp.textContent = new Date().toLocaleTimeString();
+            messageDiv.appendChild(timestamp);
+
+            const readReceipt = document.createElement('div');
+            readReceipt.classList.add('read-receipt');
+            readReceipt.textContent = 'Delivered';
+            messageDiv.appendChild(readReceipt);
+
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                readReceipt.textContent = 'Read';
+            }, 2000);
         }
 
         function setTheme(theme) {
