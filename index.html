@@ -137,16 +137,36 @@
         .video-call-content button {
             margin: 5px;
         }
+        .profile-section {
+            display: flex;
+            align-items: center;
+        }
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-info h2 {
+            margin: 0;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <div class="container theme-light" id="app-container">
         <div class="chat-header">
-            <div class="message-content">
+            <div class="profile-section">
                 <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
-                <h2 id="chat-title">Chat with John Doe</h2>
+                <div class="profile-info">
+                    <h2 id="chat-title">Chat with John Doe</h2>
+                    <span id="user-status">Status: Available</span>
+                </div>
             </div>
-            <span id="user-status">Status: Available</span>
             <span id="online-status" class="online-status">Online</span>
         </div>
 
@@ -190,6 +210,7 @@
             <button onclick="toggleSmartReply()">Smart Reply</button>
             <button onclick="toggleVoiceToText()">Voice-to-Text</button>
             <button onclick="toggleTranslateMessage()">Translate Message</button>
+            <button onclick="toggleEditDelete()">Edit/Delete Messages</button>
         </div>
 
         <div class="schedule-message" id="schedule-message">
@@ -217,158 +238,136 @@
 
         <div class="backup-container">
             <button onclick="backupChat()">Backup Chat</button>
-            <button onclick="restoreChat()">Restore Chat</button>
+            <button onclick="restoreBackup()">Restore Backup</button>
+        </div>
+
+        <div class="video-call-content">
+            <video id="local-video" autoplay></video>
+            <video id="remote-video" autoplay></video>
+            <button onclick="startVideoCall()">Start Video Call</button>
+            <button onclick="stopVideoCall()">End Video Call</button>
+            <button onclick="shareScreen()">Share Screen</button>
         </div>
 
         <div class="chat-footer">
-            <input type="text" id="message-input" placeholder="Type a message">
+            <input type="text" id="message-input" placeholder="Type your message here">
             <button onclick="sendMessage()">Send</button>
-            <button onclick="archiveChat()" class="archive-button">Archive</button>
-        </div>
-
-        <div id="videoCallModal" style="display: none;">
-            <div class="video-call-content">
-                <h3>Video Call with John Doe</h3>
-                <video id="localVideo" autoplay></video>
-                <video id="remoteVideo" autoplay></video>
-                <button onclick="toggleMute()">Mute/Unmute</button>
-                <button onclick="toggleVideo()">Start/Stop Video</button>
-                <button onclick="endCall()">End Call</button>
-                <button onclick="screenShare()">Share Screen</button>
-                <button onclick="recordCall()">Record</button>
-                <button onclick="blurBackground()">Blur Background</button>
-            </div>
+            <button onclick="sendFile()">Send File</button>
         </div>
     </div>
 
     <script>
-        function sendMessage() {
-            const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value;
-            if (messageText) {
-                const chatBox = document.getElementById('chat-box');
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', 'user');
-                messageDiv.innerHTML = `${messageText}<div class="timestamp">Just Now</div><div class="read-receipt">Sent</div>`;
-                chatBox.appendChild(messageDiv);
-                messageInput.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
+        function setTheme(theme) {
+            document.getElementById('app-container').className = `container ${theme}`;
         }
 
-        function setTheme(theme) {
-            const appContainer = document.getElementById('app-container');
-            appContainer.className = `container ${theme}`;
+        function updateStatus() {
+            const statusInput = document.getElementById('status-input').value;
+            document.getElementById('user-status').textContent = `Status: ${statusInput}`;
         }
 
         function toggleOnlineStatus() {
             const onlineStatus = document.getElementById('online-status');
             if (onlineStatus.textContent === 'Online') {
                 onlineStatus.textContent = 'Offline';
-                onlineStatus.style.color = 'red';
             } else {
                 onlineStatus.textContent = 'Online';
-                onlineStatus.style.color = 'green';
             }
         }
 
-        function updateStatus() {
-            const statusInput = document.getElementById('status-input');
-            const userStatus = document.getElementById('user-status');
-            if (statusInput.value) {
-                userStatus.textContent = `Status: ${statusInput.value}`;
-                statusInput.value = '';
-            }
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input').value;
+            const chatBox = document.getElementById('chat-box');
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.textContent = messageInput;
+
+            const timestampDiv = document.createElement('div');
+            timestampDiv.className = 'timestamp';
+            timestampDiv.textContent = new Date().toLocaleTimeString();
+
+            const readReceiptDiv = document.createElement('div');
+            readReceiptDiv.className = 'read-receipt';
+            readReceiptDiv.textContent = 'Sent';
+
+            messageDiv.appendChild(timestampDiv);
+            messageDiv.appendChild(readReceiptDiv);
+            chatBox.appendChild(messageDiv);
+
+            document.getElementById('message-input').value = '';
         }
 
-        function screenShare() {
-            alert('Screen sharing started');
-        }
-
-        function recordCall() {
-            alert('Call recording started');
-        }
-
-        function blurBackground() {
-            alert('Background blur applied');
-        }
-
-        function setAutoReply() {
-            const autoReplyInput = document.getElementById('auto-reply-input');
-            if (autoReplyInput.value) {
-                alert(`Auto-reply set: ${autoReplyInput.value}`);
-                autoReplyInput.value = '';
-            }
+        function sendFile() {
+            alert('File sent!');
         }
 
         function searchContacts() {
-            const searchInput = document.getElementById('search-input');
-            alert(`Searching for: ${searchInput.value}`);
-        }
-
-        function archiveChat() {
-            alert('Chat archived');
+            alert('Search initiated!');
         }
 
         function toggleScheduleMessage() {
-            const scheduleMessage = document.getElementById('schedule-message');
-            scheduleMessage.style.display = scheduleMessage.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('schedule-message').style.display = 'block';
         }
 
         function scheduleMessage() {
-            const scheduleTime = document.getElementById('schedule-time').value;
-            alert(`Message scheduled for ${scheduleTime}`);
+            alert('Message scheduled!');
         }
 
         function toggleAutoDeleteMessage() {
-            const autoDeleteMessage = document.getElementById('auto-delete-message');
-            autoDeleteMessage.style.display = autoDeleteMessage.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('auto-delete-message').style.display = 'block';
         }
 
         function setAutoDelete() {
-            const autoDeleteTime = document.getElementById('auto-delete-time').value;
-            alert(`Message will auto-delete after ${autoDeleteTime} seconds`);
+            alert('Auto-delete set!');
         }
 
         function toggleSmartReply() {
-            const smartReply = document.getElementById('smart-reply');
-            smartReply.style.display = smartReply.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('smart-reply').style.display = 'block';
         }
 
         function sendSmartReply() {
-            const smartReplySuggestion = document.getElementById('smart-reply-suggestion').textContent;
-            alert(`Smart reply sent: ${smartReplySuggestion}`);
-        }
-
-        function convertVoiceToText() {
-            alert('Voice note converted to text');
-        }
-
-        function translateMessage() {
-            alert('Message translated');
-        }
-
-        function backupChat() {
-            alert('Chat backup initiated');
-        }
-
-        function restoreChat() {
-            alert('Chat backup restored');
+            alert('Smart reply sent!');
         }
 
         function toggleVoiceToText() {
-            const voiceToText = document.getElementById('voice-to-text');
-            voiceToText.style.display = voiceToText.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('voice-to-text').style.display = 'block';
+        }
+
+        function convertVoiceToText() {
+            alert('Voice converted to text!');
         }
 
         function toggleTranslateMessage() {
-            const translateMessage = document.getElementById('translate-message');
-            translateMessage.style.display = translateMessage.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('translate-message').style.display = 'block';
         }
 
-        function toggleSmartReply() {
-            const smartReply = document.getElementById('smart-reply');
-            smartReply.style.display = smartReply.style.display === 'none' ? 'block' : 'none';
+        function translateMessage() {
+            alert('Message translated!');
+        }
+
+        function backupChat() {
+            alert('Chat backed up!');
+        }
+
+        function restoreBackup() {
+            alert('Backup restored!');
+        }
+
+        function startVideoCall() {
+            alert('Video call started!');
+        }
+
+        function stopVideoCall() {
+            alert('Video call ended!');
+        }
+
+        function shareScreen() {
+            alert('Screen sharing started!');
+        }
+
+        function toggleEditDelete() {
+            alert('Edit/Delete options enabled!');
         }
     </script>
 </body>
