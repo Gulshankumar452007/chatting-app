@@ -3,655 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Chat App</title>
+    <title>Advanced Chat App</title>
     <title>Enhanced Chat App</title>
+    <title>Enhanced Chat App with Invite Feature</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            background-color: #f2f2f2;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-
-        .container {
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            margin: 20px auto;
             width: 100%;
             max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .chat-header, .status-container, .theme-selector {
-            max-width: 900px;
-            margin: 20px auto;
+            height: 80%;
             background-color: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-radius: 5px 5px 0 0;
-            transition: background-color 0.3s, color 0.3s;
         }
-
-        .status-container input {
-            width: 70%;
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
+        .chat-header .status {
+            display: flex;
+            align-items: center;
+        }
+        .chat-header .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: green;
+            margin-right: 5px;
             flex-direction: column;
         }
-
-        .status-container button, .theme-selector button {
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
-        .chat-header, .chat-footer {
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-
-        .chat-box {
+        .chat-body {
+            padding: 10px;
             height: 300px;
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-top: none;
-            transition: background-color 0.3s;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #e9ecef;
-            position: relative;
-        }
-
-        .message.user {
-            background-color: #dcf8c6;
-        }
-
-        .timestamp, .status, .read-receipt {
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        .chat-footer {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            background-color: white;
-            border-radius: 0 0 5px 5px;
-        }
-
-        .chat-footer input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        .chat-footer button {
-            padding: 10px;
-        .message {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-
-        .typing-indicator {
-            font-size: 14px;
-            color: #888;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .online-status {
-            font-size: 14px;
-            color: #28a745;
-        }
-
-        .offline-status {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .theme-light {
-            --background-color: #ffffff;
-            --text-color: #000000;
-            --header-background: #007bff;
-            --header-text: #ffffff;
-            --chat-background: #f9f9f9;
-            --button-background: #007bff;
-            --button-text: #ffffff;
-        }
-
-        .theme-dark {
-            --background-color: #2c2c2c;
-            --text-color: #ffffff;
-            --header-background: #1c1c1c;
-            --header-text: #ffffff;
-            --chat-background: #3c3c3c;
-            --button-background: #4b4b4b;
-            --button-text: #ffffff;
-        }
-
-        .theme-blue {
-            --background-color: #e3f2fd;
-            --text-color: #0d47a1;
-            --header-background: #1e88e5;
-            --header-text: #ffffff;
-            --chat-background: #bbdefb;
-            --button-background: #1e88e5;
-            --button-text: #ffffff;
-        }
-
-        .theme-green {
-            --background-color: #e8f5e9;
-            --text-color: #1b5e20;
-            --header-background: #43a047;
-            --header-text: #ffffff;
-            --chat-background: #c8e6c9;
-            --button-background: #43a047;
-            --button-text: #ffffff;
-        }
-
-        .container {
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-
-        .chat-header {
-            background-color: var(--header-background);
-            color: var(--header-text);
-        }
-
         .chat-box {
-            background-color: var(--chat-background);
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
         }
-
-        .chat-footer button {
-            background-color: var(--button-background);
-            color: var(--button-text);
-        }
-
-        .pinned-message {
-            padding: 10px;
+        .chat-body .message {
             margin-bottom: 10px;
-            background-color: #ffeb3b;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .profile-container {
+            padding: 8px 12px;
+            border-radius: 20px;
+        .message {
+            margin-bottom: 15px;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-
-        .profile-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .profile-container button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
+            background-color: #e1ffc7;
+            max-width: 70%;
             position: relative;
-            max-width: 60%;
+            max-width: 80%;
         }
-
-        /* Video Call Modal Styles */
-        .video-call-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        .message.user {
-            background-color: #6c757d;
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
             margin-left: auto;
         }
-
-        .video-call-content {
-            width: 80%;
-            height: 80%;
-            background-color: white;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
+        .message.received {
+            background-color: #e5e5e5;
+            color: #000;
+            margin-right: auto;
+        .message.user {
+            background-color: #d3d3f5;
+            align-self: flex-end;
+        }
+        .message .timestamp {
         .timestamp {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8em;
+            color: #666;
             position: absolute;
             bottom: -15px;
             right: 10px;
+            font-size: 10px;
+            color: #999;
         }
-
-        .video-call-header {
-            padding: 10px;
-            background-color: var(--header-background);
-            color: var(--header-text);
+        .chat-footer {
+        .input-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 5px 5px 0 0;
-        .message input {
-            margin: 0;
-            padding: 5px;
-            width: calc(100% - 50px);
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: #f9f9f9;
         }
-
-        .video-call-body {
+        .chat-footer input {
             flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--chat-background);
-        .read-receipt {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            position: absolute;
-            bottom: -15px;
-            left: 10px;
-        }
-
-        .video-call-footer {
+        input[type="text"] {
+            flex-grow: 1;
             padding: 10px;
-            background-color: var(--header-background);
-            color: var(--header-text);
-        .message-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 0 0 5px 5px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
         }
-
-        .video-call-actions button {
-            padding: 10px;
-            background-color: var(--button-background);
-            color: var(--button-text);
+        .chat-footer button {
+            background-color: #007bff;
+            color: #fff;
+        button {
+            padding: 10px 20px;
             border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            background-color: #28a745;
+            color: white;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
+            margin-left: 10px;
         }
-
-        .chat-during-call {
-            width: 20%;
-            height: 100%;
-            overflow-y: auto;
+        button:hover {
+            background-color: #218838;
+        }
+        .header {
             padding: 10px;
-            background-color: #f1f1f1;
-            border-left: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
         }
-
-        .chat-during-call input {
-            margin-top: auto;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .reaction-emoji {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: white;
-            padding: 5px;
-            border-radius: 50%;
-            font-size: 16px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .profile-picture {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
+        .chat-footer .emoji-picker {
+            background: none;
+        .clear-chat {
+            background-color: #dc3545;
+            margin-left: auto;
             margin-right: 10px;
         }
-
-        .message-content {
-            display: flex;
-            align-items: center;
+        .clear-chat:hover {
+            background-color: #c82333;
         }
 
-        .search-bar {
-            margin-bottom: 10px;
+        .invite-container {
+            display: flex;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            background-color: #fff;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
         }
 
-        .search-bar input {
-            flex: 1;
-            padding: 5px;
-            border: none;
+        .invite-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             outline: none;
         }
 
-        .archive-button {
-            padding: 10px;
-            background-color: #e0e0e0;
-            color: #333;
+        .invite-container button {
+            padding: 10px 20px;
             border: none;
+            font-size: 20px;
+            background-color: #007bff;
+            color: white;
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        .language-selector {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-        }
-
-        .language-selector select {
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            margin-right: 5px;
             margin-left: 10px;
         }
-
-        .encryption-label {
+        .typing-indicator {
             font-size: 12px;
-            color: #28a745;
-        .theme-selector {
-            margin-bottom: 10px;
-        }
+            color: #999;
+            padding: 0 10px;
 
-        .starred-messages {
-        .theme-selector button {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #ffff8d;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
+        .invite-container button:hover {
+            background-color: #0069d9;
         }
-
-        .auto-reply {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-
-        .auto-reply input {
-            width: 80%;
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            margin-right: 5px;
-        }
-
-        .auto-reply button {
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            background-color: #007bff;
-            margin-right: 5px;
-        }
-        .theme-light { background-color: #fff; color: #000; }
-        .theme-dark { background-color: #343a40; color: #fff; }
-        .theme-blue { background-color: #007bff; color: #fff; }
-        .theme-green { background-color: #28a745; color: #fff; }
     </style>
 </head>
 <body>
-    <div class="container theme-light" id="app-container">
-        <div class="chat-header">
-            <div class="message-content">
-                <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
-                <h2 id="chat-title">Chat with John Doe</h2>
-            </div>
-            <span id="user-status">Status: Available</span>
-            <span id="online-status" class="online-status">Online</span>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div>Chat with John</div>
+        <div class="status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <div>Online</div>
+    <div class="chat-container">
+        <div class="header">
+            <span id="chat-title">Chat App</span>
+            <button class="clear-chat" onclick="clearChat()">Clear Chat</button>
         </div>
-        <div class="status-container">
-            <input type="text" id="status-input" placeholder="Update your status">
-            <button onclick="updateStatus()">Update</button>
-            <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
+        <div id="chat-box" class="chat-box">
         </div>
-        <div class="theme-selector">
-            <button onclick="setTheme('theme-light')">Light Theme</button>
-            <button onclick="setTheme('theme-dark')">Dark Theme</button>
-            <button onclick="setTheme('theme-blue')">Blue Theme</button>
-            <button onclick="setTheme('theme-green')">Green Theme</button>
-        </div>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search contacts/groups">
-            <button onclick="searchContacts()">Search</button>
-        </div>
-        <div class="encryption-label">End-to-End Encryption Enabled</div>
-        <div class="starred-messages" id="starred-message" style="display:none;">⭐ Important Message</div>
-        <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
-        <div class="chat-box" id="chat-box">
-            <div class="message user">
-                <span class="reaction-emoji">👍</span>
-                Hi, how are you?
-                <div class="timestamp">10:00 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-            <div class="message user">
-                <span class="reaction-emoji">❤️</span>
-                I'm doing great, thanks!
-                <div class="timestamp">10:05 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="message-input" placeholder="Type a message">
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
-            <button onclick="archiveChat()" class="archive-button">Archive</button>
         </div>
-        <div class="auto-reply">
-            <input type="text" id="auto-reply-input" placeholder="Set Auto-reply for Group">
-            <button onclick="setAutoReply()">Set</button>
-        </div>
-        <div class="language-selector">
-            <label for="language">Choose Language:</label>
-            <select id="language">
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-            </select>
+        <div class="invite-container">
+            <input type="email" id="friend-email" placeholder="Enter friend's email">
+            <button onclick="sendInvite()">Invite Friend</button>
         </div>
     </div>
-
-    <div class="video-call-modal" id="videoCallModal">
-        <div class="video-call-content">
-            <div class="video-call-header">
-                <h2>Video Call with John Doe</h2>
-        <div id="videoCallModal" style="display: none;">
-            <div class="video-call-content">
-                <h3>Video Call with John Doe</h3>
-                <video id="localVideo" autoplay></video>
-                <video id="remoteVideo" autoplay></video>
-                <button onclick="toggleMute()">Mute/Unmute</button>
-                <button onclick="toggleVideo()">Start/Stop Video</button>
-                <button onclick="endCall()">End Call</button>
-            </div>
-            <div class="video-call-body">
-            </div>
-            <div class="video-call-footer">
-                <div class="video-call-actions">
-                    <button onclick="toggleMute()">Mute/Unmute</button>
-                    <button onclick="toggleVideo()">Start/Stop Video</button>
-                    <button onclick="shareScreen()">Share Screen</button>
-                    <button onclick="startRecording()">Record</button>
-                    <button onclick="toggleBackgroundBlur()">Background Blur</button>
-                </div>
-                <div class="chat-during-call">
-                    <input type="text" id="chat-during-call-input" placeholder="Chat during call">
-                    <button onclick="sendDuringCall()">Send</button>
-                </div>
-                <button onclick="screenShare()">Share Screen</button>
-                <button onclick="recordCall()">Record</button>
-                <button onclick="blurBackground()">Blur Background</button>
-            </div>
-        </div>
+    <div class="chat-body" id="chatBody">
+        <!-- Messages will be appended here -->
     </div>
+    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+        John is typing...
+    </div>
+    <div class="chat-footer">
+        <button class="emoji-picker" onclick="pickEmoji()">😊</button>
+        <input type="text" id="messageInput" placeholder="Type a message..." oninput="showTypingIndicator()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
+<script>
+    const statusIndicator = document.getElementById('statusIndicator');
+    const chatBody = document.getElementById('chatBody');
+    const messageInput = document.getElementById('messageInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    let typingTimeout;
+
+    function sendMessage() {
+        const message = messageInput.value;
+        if (message.trim() === '') return;
+        appendMessage(message, 'sent');
+        messageInput.value = '';
+        hideTypingIndicator();
+    }
+
+    function appendMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        messageDiv.innerHTML = `${message}<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        clearTimeout(typingTimeout);
+        typingIndicator.style.display = 'block';
+        typingTimeout = setTimeout(hideTypingIndicator, 1000);
+    }
+
+    function hideTypingIndicator() {
+        typingIndicator.style.display = 'none';
+    }
+
+    function pickEmoji() {
+        const emoji = prompt("Choose an emoji: 😊, 😂, 😎, 😍");
+        if (emoji) {
+            messageInput.value += emoji;
     <script>
-        function updateStatus() {
-            const status = document.getElementById('status-input').value;
-            document.getElementById('user-status').innerText = `Status: ${status}`;
+        let username = prompt("Enter your name:", "You");
+        if (username) {
+            document.getElementById('chat-title').textContent = username + "'s Chat";
+        } else {
+            username = "You";
         }
-
-        function toggleOnlineStatus() {
-            const status = document.getElementById('online-status');
-            if (status.classList.contains('online-status')) {
-                status.classList.remove('online-status');
-                status.classList.add('offline-status');
-                status.innerText = 'Offline';
-            } else {
-                status.classList.remove('offline-status');
-                status.classList.add('online-status');
-                status.innerText = 'Online';
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value;
-            if (messageText) {
+            const messageText = messageInput.value.trim();
+            if (messageText !== '') {
                 const chatBox = document.getElementById('chat-box');
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'user');
-                messageDiv.innerHTML = `${messageText}<div class="timestamp">Just Now</div><div class="read-receipt">Sent</div>`;
+                messageDiv.textContent = messageText;
+                const timestamp = document.createElement('span');
+                timestamp.classList.add('timestamp');
+                timestamp.textContent = new Date().toLocaleTimeString();
+                messageDiv.appendChild(timestamp);
                 chatBox.appendChild(messageDiv);
-                messageInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
+                messageInput.value = '';
+                setTimeout(() => {
+                    receiveMessage("Friend", "Hello! This is a reply.");
+                }, 1000);
             }
         }
-
-        function setTheme(theme) {
-            document.getElementById('app-container').className = `container ${theme}`;
-            const appContainer = document.getElementById('app-container');
-            appContainer.className = `container ${theme}`;
+        function receiveMessage(sender, messageText) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.textContent = `${sender}: ${messageText}`;
+            const timestamp = document.createElement('span');
+            timestamp.classList.add('timestamp');
+            timestamp.textContent = new Date().toLocaleTimeString();
+            messageDiv.appendChild(timestamp);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        function searchContacts() {
-            const query = document.getElementById('search-input').value;
-            alert(`Searching for: ${query}`);
+        function clearChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
         }
+    }
+</script>
 
-        function sendMessage() {
-            const message = document.getElementById('message-input').value;
-            alert(`Message sent: ${message}`);
-        }
-
-        function archiveChat() {
-            alert('Chat archived');
-        function toggleOnlineStatus() {
-            const onlineStatus = document.getElementById('online-status');
-            if (onlineStatus.textContent === 'Online') {
-                onlineStatus.textContent = 'Offline';
-                onlineStatus.style.color = 'red';
+        function sendInvite() {
+            const friendEmail = document.getElementById('friend-email').value.trim();
+            if (friendEmail !== '') {
+                alert(`An invite has been sent to ${friendEmail}`);
+                document.getElementById('friend-email').value = '';
             } else {
-                onlineStatus.textContent = 'Online';
-                onlineStatus.style.color = 'green';
+                alert('Please enter a valid email address.');
             }
-        }
-
-        function setAutoReply() {
-            const reply = document.getElementById('auto-reply-input').value;
-            alert(`Auto-reply set: ${reply}`);
-        function updateStatus() {
-            const statusInput = document.getElementById('status-input');
-            const userStatus = document.getElementById('user-status');
-            if (statusInput.value) {
-                userStatus.textContent = `Status: ${statusInput.value}`;
-                statusInput.value = '';
-            }
-        }
-
-        function shareScreen() {
-        function screenShare() {
-            alert('Screen sharing started');
-        }
-
-        function startRecording() {
-            alert('Recording started');
-        function recordCall() {
-            alert('Call recording started');
-        }
-
-        function toggleBackgroundBlur() {
-            alert('Background blur toggled');
-        function blurBackground() {
-            alert('Background blur applied');
-        }
-
-        function sendDuringCall() {
-            const message = document.getElementById('chat-during-call-input').value;
-            alert(`Message sent during call: ${message}`);
-        }
-
-        function toggleMute() {
-            alert('Toggled mute/unmute');
-        function setAutoReply() {
-            const autoReplyInput = document.getElementById('auto-reply-input');
-            if (autoReplyInput.value) {
-                alert(`Auto-reply set: ${autoReplyInput.value}`);
-                autoReplyInput.value = '';
-            }
-        }
-
-        function toggleVideo() {
-            alert('Toggled video');
-        function searchContacts() {
-            const searchInput = document.getElementById('search-input');
-            alert(`Searching for: ${searchInput.value}`);
-        }
-
-        function endCall() {
-            document.getElementById('videoCallModal').style.display = 'none';
-        function archiveChat() {
-            alert('Chat archived');
         }
     </script>
 </body>
-        </html>
+    </html>
 
