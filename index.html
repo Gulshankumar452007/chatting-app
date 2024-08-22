@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat App with Voice Call</title>
     <title>Advanced Chat App with Group Voice Call</title>
+    <title>Advanced Chat App with Voice and Video Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -196,8 +196,8 @@
             background-color: #1f1f1f;
         }
 
-        /* Voice Call Modal */
         .call-modal {
+        .call-modal, .video-call-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -209,35 +209,49 @@
             align-items: center;
             z-index: 1000;
         }
+
         .call-modal-content {
+        .call-modal-content, .video-call-modal-content {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             width: 300px;
         }
+
         .call-modal-content h2 {
+        .call-modal-content h2, .video-call-modal-content h2 {
             margin-bottom: 20px;
         }
+
         .call-modal-content button {
+        .call-modal-content button, .video-call-modal-content button {
             margin: 10px;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
+
         .call-modal-content .accept {
+        .call-modal-content .accept, .video-call-modal-content .accept {
             background-color: #28a745;
             color: white;
         }
+
         .call-modal-content .accept:hover {
+        .call-modal-content .accept:hover, .video-call-modal-content .accept:hover {
             background-color: #218838;
         }
+
         .call-modal-content .decline {
+        .call-modal-content .decline, .video-call-modal-content .decline {
             background-color: #dc3545;
             color: white;
         }
+
         .call-modal-content .decline:hover {
+        .call-modal-content .decline:hover, .video-call-modal-content .decline:hover {
             background-color: #c82333;
         }
     </style>
@@ -256,6 +270,7 @@
             <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
             <button onclick="startVoiceCall()">📞</button>
+            <button onclick="startVideoCall()">📹</button>
         </div>
         <div class="invite-container">
             <input type="email" id="friend-email" placeholder="Enter friend's email">
@@ -265,17 +280,26 @@
         <div class="group-container">
             <button onclick="createGroup()">Create Group</button>
             <button onclick="startGroupVoiceCall()">Start Group Call</button>
+            <button onclick="startGroupVideoCall()">Start Group Video Call</button>
         </div>
     </div>
 
     <div id="call-modal" class="call-modal">
         <div class="call-modal-content">
-            <h2>Incoming Call...</h2>
             <h2 id="call-modal-title">Incoming Call...</h2>
             <button class="accept" onclick="acceptCall()">Accept</button>
             <button class="decline" onclick="declineCall()">Decline</button>
         </div>
     </div>
+
+    <div id="video-call-modal" class="video-call-modal">
+        <div class="video-call-modal-content">
+            <h2 id="video-call-modal-title">Incoming Video Call...</h2>
+            <button class="accept" onclick="acceptVideoCall()">Accept</button>
+            <button class="decline" onclick="declineVideoCall()">Decline</button>
+        </div>
+    </div>
+
     <script>
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
@@ -384,17 +408,14 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
-
         function startVoiceCall() {
             document.getElementById('call-modal-title').textContent = 'Incoming Call...';
             document.getElementById('call-modal').style.display = 'flex';
         }
-
         function startGroupVoiceCall() {
             document.getElementById('call-modal-title').textContent = 'Incoming Group Call...';
             document.getElementById('call-modal').style.display = 'flex';
         }
-
         function acceptCall() {
             alert('Call started');
             document.getElementById('call-modal').style.display = 'none';
@@ -402,6 +423,26 @@
         function declineCall() {
             alert('Call declined');
             document.getElementById('call-modal').style.display = 'none';
+        }
+
+        function startVideoCall() {
+            document.getElementById('video-call-modal-title').textContent = 'Incoming Video Call...';
+            document.getElementById('video-call-modal').style.display = 'flex';
+        }
+
+        function startGroupVideoCall() {
+            document.getElementById('video-call-modal-title').textContent = 'Incoming Group Video Call...';
+            document.getElementById('video-call-modal').style.display = 'flex';
+        }
+
+        function acceptVideoCall() {
+            alert('Video call started');
+            document.getElementById('video-call-modal').style.display = 'none';
+        }
+
+        function declineVideoCall() {
+            alert('Video call declined');
+            document.getElementById('video-call-modal').style.display = 'none';
         }
     </script>
 </body>
