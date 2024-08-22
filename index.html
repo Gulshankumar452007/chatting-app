@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Customizable Themes and Voice Notes</title>
-    <title>Chat App with Pinned Messages and Voice Notes</title>
+    <title>Enhanced Chat App</title>
+    <title>Advanced Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +23,7 @@
             border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
         }
-        .chat-header, .status-container {
+        .chat-header, .status-container, .theme-selector {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -87,6 +87,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-left: 5px;
         }
         .typing-indicator {
             font-size: 14px;
@@ -102,6 +103,8 @@
             font-size: 14px;
             color: #888;
         }
+
+        /* Light Theme */
         .theme-light {
             --background-color: #ffffff;
             --text-color: #000000;
@@ -111,6 +114,8 @@
             --button-background: #007bff;
             --button-text: #ffffff;
         }
+
+        /* Dark Theme */
         .theme-dark {
             --background-color: #2c2c2c;
             --text-color: #ffffff;
@@ -120,6 +125,8 @@
             --button-background: #4b4b4b;
             --button-text: #ffffff;
         }
+
+        /* Blue Theme */
         .theme-blue {
             --background-color: #e3f2fd;
             --text-color: #0d47a1;
@@ -156,6 +163,7 @@
             color: var(--button-text);
         }
 
+        /* Pinned Message Styles */
         .pinned-message {
             padding: 10px;
             margin-bottom: 10px;
@@ -163,6 +171,29 @@
             border-radius: 5px;
             font-weight: bold;
             color: #333;
+        }
+
+        /* User Profile Styles */
+        .profile-container {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .profile-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .profile-container button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -173,6 +204,7 @@
             <span id="user-status">Status: Available</span>
             <span id="online-status" class="online-status">Online</span>
         </div>
+
         <div class="status-container">
             <input type="text" id="status-input" placeholder="Update your status...">
             <button onclick="updateStatus()">Set Status</button>
@@ -184,6 +216,7 @@
         <div class="chat-box" id="chat-box">
             <div id="typing-indicator" class="typing-indicator">User is typing...</div>
         </div>
+
         <div class="chat-footer">
             <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
@@ -196,6 +229,7 @@
             <input type="text" id="friend-name" placeholder="Enter friend's name...">
             <button onclick="sendInvite()">Invite Friend</button>
         </div>
+
         <div class="chat-footer">
             <button onclick="createGroup()">Create Group</button>
             <button onclick="startVoiceCall()">Start Voice Call</button>
@@ -203,74 +237,93 @@
             <button onclick="startVideoCall()">Start Video Call</button>
             <button onclick="startGroupVideoCall()">Start Group Video Call</button>
         </div>
+
         <div class="theme-selector">
             <button onclick="setTheme('theme-light')">Light Theme</button>
             <button onclick="setTheme('theme-dark')">Dark Theme</button>
             <button onclick="setTheme('theme-blue')">Blue Theme</button>
             <button onclick="setTheme('theme-green')">Green Theme</button>
         </div>
+
+        <div class="profile-container" id="profile-container" style="display:none;">
+            <h3>User Profile</h3>
+            <input type="text" id="profile-name" placeholder="Enter your name...">
+            <input type="text" id="profile-email" placeholder="Enter your email...">
+            <button onclick="updateProfile()">Update Profile</button>
+            <button onclick="toggleProfileVisibility()">Hide Profile</button>
+        </div>
     </div>
+
     <script>
         let typingTimeout;
-        let onlineStatus = true; 
         let isRecording = false;
+        let onlineStatus = true;
         let lastMessage = '';
 
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value.trim();
-            if (messageText !== '') {
-                lastMessage = messageText;
+            const chatBox = document.getElementById('chat-box');
+            const message = messageInput.value.trim();
 
-                const chatBox = document.getElementById('chat-box');
+            if (message !== '') {
+                lastMessage = message;
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'user');
-                messageDiv.textContent = messageText;
+                messageDiv.textContent = message;
+
                 const timestamp = document.createElement('div');
                 timestamp.classList.add('timestamp');
                 timestamp.textContent = new Date().toLocaleTimeString();
                 messageDiv.appendChild(timestamp);
+
                 const readReceipt = document.createElement('div');
                 readReceipt.classList.add('read-receipt');
                 readReceipt.textContent = 'Delivered';
                 messageDiv.appendChild(readReceipt);
+
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
                 messageInput.value = '';
-                hideTypingIndicator();
+
                 setTimeout(() => {
                     readReceipt.textContent = 'Read';
                 }, 2000);
             }
         }
+
         function showTypingIndicator() {
             const typingIndicator = document.getElementById('typing-indicator');
             typingIndicator.style.display = 'block';
-
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(hideTypingIndicator, 2000);
         }
+
         function hideTypingIndicator() {
             const typingIndicator = document.getElementById('typing-indicator');
             typingIndicator.style.display = 'none';
         }
+
         function sendInvite() {
             const email = document.getElementById('friend-email').value;
             const name = document.getElementById('friend-name').value;
             alert('Invite sent to ' + name + ' (' + email + ')');
         }
+
         function createGroup() {
             const groupName = prompt("Enter Group Name:");
             const emails = prompt("Enter member emails (comma-separated):");
+
             if (groupName && emails) {
                 document.getElementById('chat-title').textContent = groupName + " Group Chat";
                 alert('Group created: ' + groupName + '\nMembers: ' + emails);
             }
         }
+
         function updateStatus() {
             const statusInput = document.getElementById('status-input');
             const statusText = statusInput.value.trim();
             const userStatus = document.getElementById('user-status');
+
             if (statusText !== '') {
                 userStatus.textContent = 'Status: ' + statusText;
                 statusInput.value = '';
@@ -278,7 +331,19 @@
             } else {
                 alert('Please enter a status.');
             }
+        /* Video Call Modal Styles */
+        .video-call-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
         }
+
         function toggleOnlineStatus() {
             const onlineStatusElement = document.getElementById('online-status');
             onlineStatus = !onlineStatus;
@@ -291,19 +356,61 @@
                 onlineStatusElement.classList.add('offline-status');
                 onlineStatusElement.classList.remove('online-status');
             }
+        .video-call-content {
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
         }
+
         function startVoiceCall() {
             alert('Starting a voice call...');
+        .video-call-header {
+            padding: 10px;
+            background-color: var(--header-background);
+            color: var(--header-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px 5px 0 0;
         }
+
         function startGroupVoiceCall() {
             alert('Starting a group voice call...');
+        .video-call-body {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--chat-background);
         }
+
         function startVideoCall() {
             alert('Starting a video call...');
+        .video-call-footer {
+            padding: 10px;
+            background-color: var(--header-background);
+            color: var(--header-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 5px 5px;
         }
+
         function startGroupVideoCall() {
             alert('Starting a group video call...');
+        .video-call-actions button {
+            padding: 10px;
+            background-color: var(--button-background);
+            color: var(--button-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
         }
+
         function recordVoiceNote() {
             if (!isRecording) {
                 isRecording = true;
@@ -316,26 +423,54 @@
             } else {
                 alert('Already recording...');
             }
+        .chat-during-call {
+            width: 20%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
         }
+
         function sendVoiceNote() {
             const chatBox = document.getElementById('chat-box');
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', 'user');
             messageDiv.textContent = "Voice Note: [audio]";
+
             const timestamp = document.createElement('div');
             timestamp.classList.add('timestamp');
             timestamp.textContent = new Date().toLocaleTimeString();
             messageDiv.appendChild(timestamp);
+
             const readReceipt = document.createElement('div');
             readReceipt.classList.add('read-receipt');
             readReceipt.textContent = 'Delivered';
             messageDiv.appendChild(readReceipt);
+
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
+
             setTimeout(() => {
                 readReceipt.textContent = 'Read';
             }, 2000);
+        .chat-during-call input {
+            margin-top: auto;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
+    </style>
+</head>
+<body>
+    <div class="container theme-light" id="app-container">
+        <div class="chat-header">
+            <h2 id="chat-title">Chat with John Doe</h2>
+            <span id="user-status">Status: Available</span>
+            <span id="online-status" class="online-status">Online</span>
+        </div>
 
         function pinMessage() {
             const pinnedMessageElement = document.getElementById('pinned-message');
@@ -346,10 +481,47 @@
                 alert('No message to pin.');
             }
         }
+        <div class="status-container">
+            <input type="text" id="statusinput" placeholder="Update your status"> 
+            <button onclick="updateStatus()">Update</button>
+        <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
+</div>
+    <div class="theme-selector">
+        <button onclick="setTheme('theme-light')">Light Theme</button>
+        <button onclick="setTheme('theme-dark')">Dark Theme</button>
+        <button onclick="setTheme('theme-blue')">Blue Theme</button>
+        <button onclick="setTheme('theme-green')">Green Theme</button>
+    </div>
 
         function setTheme(theme) {
             document.getElementById('app-container').className = `container ${theme}`;
         }
+    <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
+
+        function updateProfile() {
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            if (name && email) {
+                alert('Profile updated: ' + name + ' (' + email + ')');
+            } else {
+                alert('Please enter all profile details.');
+            }
+        }
+
+        function toggleProfileVisibility() {
+            const profileContainer = document.getElementById('profile-container');
+            if (profileContainer.style.display === 'none') {
+                profileContainer.style.display = 'block';
+            } else {
+                profileContainer.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
+    <div class="chat-box" id="chat-box">
+        <div class="message user">
+            Hi, how are you?
+            <div class="timestamp">10:00 AM</div>
+            <div class="read-receipt">Read</div>
+        </div
