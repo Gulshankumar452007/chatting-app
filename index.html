@@ -3,558 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Chat App</title>
-    <title>Ultimate Chat App</title>
+    <title>Advanced Chat App with Group Voice Call</title>
+    <title>Advanced Chat App with Voice and Video Call</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.3s;
         }
-        .container {
+        .chat-container {
             width: 100%;
             max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .chat-header, .status-container, .theme-selector {
+            height: 80%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-radius: 5px 5px 0 0;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .status-container input {
-            width: 70%;
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-        }
-        .status-container button, .theme-selector button {
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
-            color: white;
-            cursor: pointer;
+            flex-direction: column;
+            transition: background-color 0.3s;
+            position: relative;
         }
         .chat-box {
-            height: 300px;
+            flex-grow: 1;
+            padding: 20px;
             overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-top: none;
+            border-bottom: 1px solid #ddd;
+            background-color: #f2f2f2;
             transition: background-color 0.3s;
         }
         .message {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
+            background-color: #e1ffc7;
+            max-width: 70%;
             position: relative;
+            transition: background-color 0.3s;
         }
         .message.user {
-            background-color: #dcf8c6;
+            background-color: #d3d3f5;
+            align-self: flex-end;
         }
-        .timestamp, .status, .read-receipt {
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
         }
-        .chat-footer {
+        .reaction {
+            position: absolute;
+            bottom: -20px;
+            left: 10px;
+            font-size: 1.2em;
+        }
+        .message-options {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            display: none;
+            cursor: pointer;
+        }
+        .message:hover .message-options {
+            display: block;
+        }
+        .input-container {
             display: flex;
             padding: 10px;
-            border-top: 1px solid #ddd;
-            background-color: white;
-            border-radius: 0 0 5px 5px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
         }
-        .chat-footer input {
-            flex: 1;
+        input[type="text"], input[type="email"] {
+            flex-grow: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .header {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark-mode-toggle {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+        .clear-chat {
+            background-color: #dc3545;
+            margin-left: auto;
             margin-right: 10px;
         }
-        .chat-footer button {
+        .clear-chat:hover {
+            background-color: #c82333;
+        }
+        .invite-container, .group-container {
+            display: flex;
             padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+        .invite-container input, .group-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        .invite-container button, .group-container button {
+            padding: 10px 20px;
+            border: none;
             background-color: #007bff;
             color: white;
-            border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-left: 5px;
+            margin-left: 10px;
+        }
+        .invite-container button:hover, .group-container button:hover {
+            background-color: #0069d9;
+        }
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .emoji-picker span {
+            font-size: 1.5em;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .emoji-picker span:hover {
+            background-color: #ddd;
+            border-radius: 5px;
         }
         .typing-indicator {
-            font-size: 14px;
-            color: #888;
-            margin-top: 5px;
-            display: none;
-        }
-        .online-status {
-            font-size: 14px;
-            color: #28a745;
-        }
-        .offline-status {
-            font-size: 14px;
-            color: #888;
-        }
-
-        /* Light Theme */
-        .theme-light {
-            --background-color: #ffffff;
-            --text-color: #000000;
-            --header-background: #007bff;
-            --header-text: #ffffff;
-            --chat-background: #f9f9f9;
-            --button-background: #007bff;
-            --button-text: #ffffff;
-        }
-
-        /* Dark Theme */
-        .theme-dark {
-            --background-color: #2c2c2c;
-            --text-color: #ffffff;
-            --header-background: #1c1c1c;
-            --header-text: #ffffff;
-            --chat-background: #3c3c3c;
-            --button-background: #4b4b4b;
-            --button-text: #ffffff;
-        }
-
-        /* Blue Theme */
-        .theme-blue {
-            --background-color: #e3f2fd;
-            --text-color: #0d47a1;
-            --header-background: #1e88e5;
-            --header-text: #ffffff;
-            --chat-background: #bbdefb;
-            --button-background: #1e88e5;
-            --button-text: #ffffff;
-        }
-
-        /* Green Theme */
-        .theme-green {
-            --background-color: #e8f5e9;
-            --text-color: #1b5e20;
-            --header-background: #43a047;
-            --header-text: #ffffff;
-            --chat-background: #c8e6c9;
-            --button-background: #43a047;
-            --button-text: #ffffff;
-        }
-        .container {
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-        .chat-header {
-            background-color: var(--header-background);
-            color: var(--header-text);
-        }
-        .chat-box {
-            background-color: var(--chat-background);
-        }
-        .chat-footer button {
-            background-color: var(--button-background);
-            color: var(--button-text);
-        }
-
-        /* Pinned Message Styles */
-        .pinned-message {
-            padding: 10px;
+            font-size: 0.9em;
+            color: #666;
+            padding-left: 10px;
             margin-bottom: 10px;
-            background-color: #ffeb3b;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
+        }
+        .status {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode .chat-box {
+            background-color: #1f1f1f;
+        }
+        .dark-mode .message {
+            background-color: #2c2c2c;
+        }
+        .dark-mode .input-container,
+        .dark-mode .invite-container,
+        .dark-mode .group-container {
+            background-color: #1f1f1f;
+        }
+        .dark-mode .header {
+            background-color: #1f1f1f;
         }
 
-        /* User Profile Styles */
-        .profile-container {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .profile-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .profile-container button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        /* Video Call Modal Styles */
-        .video-call-modal {
+        .call-modal {
+        .call-modal, .video-call-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
-        .video-call-content {
-            width: 80%;
-            height: 80%;
+
+        .call-modal-content {
+        .call-modal-content, .video-call-modal-content {
             background-color: white;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-        }
-        .video-call-header {
-            padding: 10px;
-            background-color: var(--header-background);
-            color: var(--header-text);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 5px 5px 0 0;
-        }
-        .video-call-body {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--chat-background);
-        }
-        .video-call-footer {
-            padding: 10px;
-            background-color: var(--header-background);
-            color: var(--header-text);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 0 0 5px 5px;
-        }
-        .video-call-actions button {
-            padding: 10px;
-            background-color: var(--button-background);
-            color: var(--button-text);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .chat-during-call {
-            width: 20%;
-            height: 100%;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-left: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-during-call input {
-            margin-top: auto;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
         }
 
-        .reaction-emoji {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: white;
-            padding: 5px;
-            border-radius: 50%;
-            font-size: 16px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        .call-modal-content h2 {
+        .call-modal-content h2, .video-call-modal-content h2 {
+            margin-bottom: 20px;
         }
 
-        .profile-picture {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-
-        .message-content {
-            display: flex;
-            align-items: center;
-        }
-
-        .search-bar {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            background-color: #fff;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 5px;
-            border: none;
-            outline: none;
-        }
-
-        .archive-button {
-            padding: 10px;
-            background-color: #e0e0e0;
-            color: #333;
+        .call-modal-content button {
+        .call-modal-content button, .video-call-modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .language-selector {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-        }
-
-        .language-selector select {
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-left: 10px;
-        }
-
-        .encryption-label {
-            font-size: 12px;
-            color: #28a745;
-            margin-bottom: 10px;
-        }
-
-        .starred-messages {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #ffff8d;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .auto-reply {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-
-        .auto-reply input {
-            width: 80%;
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            margin-right: 5px;
-        }
-
-        .auto-reply button {
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
+        .call-modal-content .accept {
+        .call-modal-content .accept, .video-call-modal-content .accept {
+            background-color: #28a745;
             color: white;
-            cursor: pointer;
-            background-color: #007bff;
+        }
+
+        .call-modal-content .accept:hover {
+        .call-modal-content .accept:hover, .video-call-modal-content .accept:hover {
+            background-color: #218838;
+        }
+
+        .call-modal-content .decline {
+        .call-modal-content .decline, .video-call-modal-content .decline {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .call-modal-content .decline:hover {
+        .call-modal-content .decline:hover, .video-call-modal-content .decline:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
-    <div class="container theme-light" id="app-container">
-        <div class="chat-header">
-            <h2 id="chat-title">Chat with John Doe</h2>
-            <div class="message-content">
-                <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
-                <h2 id="chat-title">Chat with John Doe</h2>
-            </div>
-            <span id="user-status">Status: Available</span>
-            <span id="online-status" class="online-status">Online</span>
+    <div class="chat-container">
+        <div class="header">
+            <span id="chat-title">Chat App</span>
+            <span class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</span>
+            <button class="clear-chat" onclick="clearChat()">Clear Chat</button>
         </div>
-
-        <div class="status-container">
-            <input type="text" id="statusinput" placeholder="Update your status"> 
-            <input type="text" id="status-input" placeholder="Update your status">
-            <button onclick="updateStatus()">Update</button>
-        <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
-</div>
-    <div class="theme-selector">
-        <button onclick="setTheme('theme-light')">Light Theme</button>
-        <button onclick="setTheme('theme-dark')">Dark Theme</button>
-        <button onclick="setTheme('theme-blue')">Blue Theme</button>
-        <button onclick="setTheme('theme-green')">Green Theme</button>
-            <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
+        <div id="chat-box" class="chat-box">
+            <div id="typing-indicator" class="typing-indicator" style="display:none;">Friend is typing...</div>
         </div>
-
-        <div class="theme-selector">
-            <button onclick="setTheme('theme-light')">Light Theme</button>
-            <button onclick="setTheme('theme-dark')">Dark Theme</button>
-            <button onclick="setTheme('theme-blue')">Blue Theme</button>
-            <button onclick="setTheme('theme-green')">Green Theme</button>
-        </div>
-
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search contacts/groups">
-            <button onclick="searchContacts()">Search</button>
-        </div>
-
-        <div class="encryption-label">End-to-End Encryption Enabled</div>
-
-        <div class="starred-messages" id="starred-message" style="display:none;">⭐ Important Message</div>
-
-        <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
-
-        <div class="chat-box" id="chat-box">
-            <div class="message user">
-                <span class="reaction-emoji">👍</span>
-                Hi, how are you?
-                <div class="timestamp">10:00 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-
-            <div class="message user">
-                <span class="reaction-emoji">❤️</span>
-                I'm doing great, thanks!
-                <div class="timestamp">10:05 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-        </div>
-
-        <div class="chat-footer">
-            <input type="text" id="message-input" placeholder="Type a message">
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type your message..." oninput="showTypingIndicator()">
             <button onclick="sendMessage()">Send</button>
-            <button onclick="archiveChat()" class="archive-button">Archive</button>
+            <button onclick="startVoiceCall()">📞</button>
+            <button onclick="startVideoCall()">📹</button>
         </div>
-
-        <div class="auto-reply">
-            <input type="text" id="auto-reply-input" placeholder="Set Auto-reply for Group">
-            <button onclick="setAutoReply()">Set</button>
+        <div class="invite-container">
+            <input type="email" id="friend-email" placeholder="Enter friend's email">
+            <input type="text" id="friend-name" placeholder="Enter friend's name">
+            <button onclick="sendInvite()">Invite Friend</button>
         </div>
-
-        <div class="language-selector">
-            <label for="language">Choose Language:</label>
-            <select id="language">
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-            </select>
+        <div class="group-container">
+            <button onclick="createGroup()">Create Group</button>
+            <button onclick="startGroupVoiceCall()">Start Group Call</button>
+            <button onclick="startGroupVideoCall()">Start Group Video Call</button>
         </div>
     </div>
 
-    <div class="video-call-modal" id="videoCallModal">
-        <div class="video-call-content">
-            <div class="video-call-header">
-                <h2>Video Call with John Doe</h2>
-                <button onclick="endCall()">End Call</button>
-            </div>
-            <div class="video-call-body">
-            </div>
-            <div class="video-call-footer">
-                <div class="video-call-actions">
-                    <button onclick="toggleMute()">Mute/Unmute</button>
-                    <button onclick="toggleVideo()">Start/Stop Video</button>
-                    <button onclick="shareScreen()">Share Screen</button>
-                    <button onclick="startRecording()">Record</button>
-                    <button onclick="toggleBackgroundBlur()">Background Blur</button>
-                </div>
-                <div class="chat-during-call">
-                    <input type="text" id="chat-during-call-input" placeholder="Chat during call">
-                    <button onclick="sendDuringCall()">Send</button>
-                </div>
-            </div>
+    <div id="call-modal" class="call-modal">
+        <div class="call-modal-content">
+            <h2 id="call-modal-title">Incoming Call...</h2>
+            <button class="accept" onclick="acceptCall()">Accept</button>
+            <button class="decline" onclick="declineCall()">Decline</button>
         </div>
     </div>
 
-    <div class="pinned-message" id="pinned-message" style="display:none;">Pinned: Hello</div>
+    <div id="video-call-modal" class="video-call-modal">
+        <div class="video-call-modal-content">
+            <h2 id="video-call-modal-title">Incoming Video Call...</h2>
+            <button class="accept" onclick="acceptVideoCall()">Accept</button>
+            <button class="decline" onclick="declineVideoCall()">Decline</button>
+        </div>
+    </div>
+
     <script>
-        function updateStatus() {
-            const status = document.getElementById('status-input').value;
-            document.getElementById('user-status').innerText = `Status: ${status}`;
-        }
-
-        function toggleOnlineStatus() {
-            const status = document.getElementById('online-status');
-            if (status.classList.contains('online-status')) {
-                status.classList.remove('online-status');
-                status.classList.add('offline-status');
-                status.innerText = 'Offline';
-            } else {
-                status.classList.remove('offline-status');
-                status.classList.add('online-status');
-                status.innerText = 'Online';
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const messageText = messageInput.value.trim();
+            if (messageText !== '') {
+                const chatBox = document.getElementById('chat-box');
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'user');
+                messageDiv.textContent = messageText;
+                const timestamp = document.createElement('div');
+                timestamp.classList.add('timestamp');
+                timestamp.textContent = new Date().toLocaleTimeString();
+                messageDiv.appendChild(timestamp);
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('message-options');
+                optionsDiv.textContent = '⋮';
+                optionsDiv.onclick = function () {
+                    showEditDeleteOptions(messageDiv);
+                };
+                messageDiv.appendChild(optionsDiv);
+                const emojiButton = document.createElement('span');
+                emojiButton.textContent = '😊';
+                emojiButton.style.cursor = 'pointer';
+                emojiButton.onclick = function () {
+                    showEmojiPicker(messageDiv);
+                };
+                messageDiv.appendChild(emojiButton);
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                messageInput.value = '';
+                setTimeout(() => updateMessageStatus(messageDiv, 'Delivered'), 1000);
+                setTimeout(() => updateMessageStatus(messageDiv, 'Read'), 2000);
             }
         }
-
-        function setTheme(theme) {
-            document.getElementById('app-container').className = `container ${theme}`;
+        function sendInvite() {
+            const email = document.getElementById('friend-email').value;
+            const name = document.getElementById('friend-name').value;
+            alert('Invite sent to ' + name + ' (' + email + ')');
+        }
+        function createGroup() {
+            const groupName = prompt("Enter Group Name:");
+            const emails = prompt("Enter member emails (comma-separated):");
+            if (groupName && emails) {
+                document.getElementById('chat-title').textContent = groupName + " Group Chat";
+                alert('Group created: ' + groupName + '\nMembers: ' + emails);
+            }
+        }
+        function showEmojiPicker(messageDiv) {
+            let emojiPicker = messageDiv.querySelector('.emoji-picker');
+            if (emojiPicker) {
+                emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+            } else {
+                emojiPicker = document.createElement('div');
+                emojiPicker.classList.add('emoji-picker');
+                const emojis = ['😊', '😂', '❤️', '👍', '😢', '😮'];
+                emojis.forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.textContent = emoji;
+                    emojiSpan.onclick = function () {
+                        addReaction(messageDiv, emoji);
+                        emojiPicker.remove();
+                    };
+                    emojiPicker.appendChild(emojiSpan);
+                });
+                messageDiv.appendChild(emojiPicker);
+                emojiPicker.style.display = 'block';
+            }
+        }
+        function addReaction(messageDiv, emoji) {
+            let reactionDiv = messageDiv.querySelector('.reaction');
+            if (!reactionDiv) {
+                reactionDiv = document.createElement('div');
+                reactionDiv.classList.add('reaction');
+                messageDiv.appendChild(reactionDiv);
+            }
+            reactionDiv.textContent = emoji;
+        }
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('typing-indicator').style.display = 'none';
+            }, 1000);
+        }
+        function showEditDeleteOptions(messageDiv) {
+            const option = prompt("Type 'edit' to edit or 'delete' to delete the message:", "");
+            if (option === 'edit') {
+                const newText = prompt("Edit your message:", messageDiv.textContent);
+                if (newText) {
+                    messageDiv.childNodes[0].nodeValue = newText;
+                }
+            } else if (option === 'delete') {
+                messageDiv.remove();
+            }
+        }
+        function updateMessageStatus(messageDiv, status) {
+            const statusSpan = document.createElement('span');
+            statusSpan.classList.add('status');
+            statusSpan.textContent = status;
+            messageDiv.appendChild(statusSpan);
+        }
+        function clearChat() {
+            if (confirm("Are you sure you want to clear the chat?")) {
+                document.getElementById('chat-box').innerHTML = '';
+            }
+        }
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        function startVoiceCall() {
+            document.getElementById('call-modal-title').textContent = 'Incoming Call...';
+            document.getElementById('call-modal').style.display = 'flex';
+        }
+        function startGroupVoiceCall() {
+            document.getElementById('call-modal-title').textContent = 'Incoming Group Call...';
+            document.getElementById('call-modal').style.display = 'flex';
+        }
+        function acceptCall() {
+            alert('Call started');
+            document.getElementById('call-modal').style.display = 'none';
+        }
+        function declineCall() {
+            alert('Call declined');
+            document.getElementById('call-modal').style.display = 'none';
         }
 
-        function searchContacts() {
-            const query = document.getElementById('search-input').value;
-            alert(`Searching for: ${query}`);
+        function startVideoCall() {
+            document.getElementById('video-call-modal-title').textContent = 'Incoming Video Call...';
+            document.getElementById('video-call-modal').style.display = 'flex';
         }
 
-        function sendMessage() {
-            const message = document.getElementById('message-input').value;
-            alert(`Message sent: ${message}`);
+        function startGroupVideoCall() {
+            document.getElementById('video-call-modal-title').textContent = 'Incoming Group Video Call...';
+            document.getElementById('video-call-modal').style.display = 'flex';
         }
 
-        function archiveChat() {
-            alert('Chat archived');
+        function acceptVideoCall() {
+            alert('Video call started');
+            document.getElementById('video-call-modal').style.display = 'none';
         }
 
-    <div class="chat-box" id="chat-box">
-        <div class="message user">
-            Hi, how are you?
-            <div class="timestamp">10:00 AM</div>
-            <div class="read-receipt">Read</div>
-        </div
-        function setAutoReply() {
-            const reply = document.getElementById('auto-reply-input').value;
-            alert(`Auto-reply set: ${reply}`);
-        }
-
-        function shareScreen() {
-            alert('Screen sharing started');
-        }
-
-        function startRecording() {
-            alert('Recording started');
-        }
-
-        function toggleBackgroundBlur() {
-            alert('Background blur toggled');
-        }
-
-        function sendDuringCall() {
-            const message = document.getElementById('chat-during-call-input').value;
-            alert(`Message sent during call: ${message}`);
-        }
-
-        function toggleMute() {
-            alert('Toggled mute/unmute');
-        }
-
-        function toggleVideo() {
-            alert('Toggled video');
-        }
-
-        function endCall() {
-            document.getElementById('videoCallModal').style.display = 'none';
+        function declineVideoCall() {
+            alert('Video call declined');
+            document.getElementById('video-call-modal').style.display = 'none';
         }
     </script>
 </body>
