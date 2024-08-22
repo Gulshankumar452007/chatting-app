@@ -11,364 +11,163 @@
             margin: 0;
             padding: 0;
         }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        .chat-container {
             display: flex;
             flex-direction: column;
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
-        .chat-header, .chat-footer {
-            padding: 15px;
+        .chat-header {
             background-color: #007bff;
-            color: white;
+            color: #fff;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .chat-box {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background-color: #e9ecef;
-            position: relative;
+        .chat-header .status {
+            display: flex;
+            align-items: center;
         }
-        .message {
-            background-color: #007bff;
-            color: white;
+        .chat-header .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: green;
+            margin-right: 5px;
+        }
+        .chat-body {
             padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            position: relative;
-            max-width: 60%;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
         }
-        .message.user {
-            background-color: #6c757d;
+        .chat-body .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            max-width: 80%;
+        }
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
             margin-left: auto;
         }
-        .timestamp {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
+        .message.received {
+            background-color: #e5e5e5;
+            color: #000;
+            margin-right: auto;
+        }
+        .message .timestamp {
             position: absolute;
             bottom: -15px;
             right: 10px;
+            font-size: 10px;
+            color: #999;
         }
-        .read-receipt {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            position: absolute;
-            bottom: -15px;
-            left: 10px;
-        }
-        .reaction-emoji {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: white;
-            padding: 5px;
-            border-radius: 50%;
-            font-size: 16px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        .search-bar {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+        .chat-footer {
             display: flex;
-            align-items: center;
-            background-color: #fff;
+            padding: 10px;
+            border-top: 1px solid #ccc;
         }
-        .search-bar input {
+        .chat-footer input {
             flex: 1;
-            padding: 5px;
-            border: none;
-            outline: none;
-        }
-        .theme-selector {
-            margin-bottom: 10px;
-        }
-        .theme-selector button {
             padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-        .theme-light { background-color: #fff; color: #000; }
-        .theme-dark { background-color: #343a40; color: #fff; }
-        .theme-blue { background-color: #007bff; color: #fff; }
-        .theme-green { background-color: #28a745; color: #fff; }
-        .message-options {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .message-options button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-        .schedule-message, .auto-delete-message, .smart-reply, .voice-to-text, .language-selector, .translate-message {
-            display: none;
-            margin-bottom: 10px;
-        }
-        .backup-container {
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .video-call-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .video-call-content video {
-            width: 300px;
-            height: 200px;
-            border: 1px solid #ddd;
-            margin: 10px 0;
-        }
-        .video-call-content button {
-            margin: 5px;
-        }
-        .profile-section {
-            display: flex;
-            align-items: center;
-        }
-        .profile-picture {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            border-radius: 20px;
+            border: 1px solid #ccc;
             margin-right: 10px;
+            font-size: 14px;
         }
-        .profile-info {
-            display: flex;
-            flex-direction: column;
+        .chat-footer button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
         }
-        .profile-info h2 {
-            margin: 0;
-            font-size: 18px;
+        .chat-footer .emoji-picker {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .typing-indicator {
+            font-size: 12px;
+            color: #999;
+            padding: 0 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container theme-light" id="app-container">
-        <div class="chat-header">
-            <div class="profile-section">
-                <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
-                <div class="profile-info">
-                    <h2 id="chat-title">Chat with John Doe</h2>
-                    <span id="user-status">Status: Available</span>
-                </div>
-            </div>
-            <span id="online-status" class="online-status">Online</span>
-        </div>
 
-        <div class="status-container">
-            <input type="text" id="status-input" placeholder="Update your status">
-            <button onclick="updateStatus()">Update</button>
-            <button onclick="toggleOnlineStatus()">Toggle Online/Offline</button>
-        </div>
-
-        <div class="theme-selector">
-            <button onclick="setTheme('theme-light')">Light Theme</button>
-            <button onclick="setTheme('theme-dark')">Dark Theme</button>
-            <button onclick="setTheme('theme-blue')">Blue Theme</button>
-            <button onclick="setTheme('theme-green')">Green Theme</button>
-        </div>
-
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search contacts/groups">
-            <button onclick="searchContacts()">Search</button>
-        </div>
-
-        <div class="chat-box" id="chat-box">
-            <div class="message user">
-                <span class="reaction-emoji">👍</span>
-                Hi, how are you?
-                <div class="timestamp">10:00 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-
-            <div class="message user">
-                <span class="reaction-emoji">❤️</span>
-                I'm doing great, thanks!
-                <div class="timestamp">10:05 AM</div>
-                <div class="read-receipt">Read</div>
-            </div>
-        </div>
-
-        <div class="message-options">
-            <button onclick="toggleScheduleMessage()">Schedule Message</button>
-            <button onclick="toggleAutoDeleteMessage()">Self-Destruct</button>
-            <button onclick="toggleSmartReply()">Smart Reply</button>
-            <button onclick="toggleVoiceToText()">Voice-to-Text</button>
-            <button onclick="toggleTranslateMessage()">Translate Message</button>
-            <button onclick="toggleEditDelete()">Edit/Delete Messages</button>
-        </div>
-
-        <div class="schedule-message" id="schedule-message">
-            <input type="datetime-local" id="schedule-time">
-            <button onclick="scheduleMessage()">Set Schedule</button>
-        </div>
-
-        <div class="auto-delete-message" id="auto-delete-message">
-            <input type="number" id="auto-delete-time" placeholder="Time in seconds">
-            <button onclick="setAutoDelete()">Set Auto-Delete</button>
-        </div>
-
-        <div class="smart-reply" id="smart-reply">
-            <p>Suggested Reply: <span id="smart-reply-suggestion">Sounds good!</span></p>
-            <button onclick="sendSmartReply()">Send</button>
-        </div>
-
-        <div class="voice-to-text" id="voice-to-text">
-            <button onclick="convertVoiceToText()">Convert Voice Note to Text</button>
-        </div>
-
-        <div class="translate-message" id="translate-message">
-            <button onclick="translateMessage()">Translate Message</button>
-        </div>
-
-        <div class="backup-container">
-            <button onclick="backupChat()">Backup Chat</button>
-            <button onclick="restoreBackup()">Restore Backup</button>
-        </div>
-
-        <div class="video-call-content">
-            <video id="local-video" autoplay></video>
-            <video id="remote-video" autoplay></video>
-            <button onclick="startVideoCall()">Start Video Call</button>
-            <button onclick="stopVideoCall()">End Video Call</button>
-            <button onclick="shareScreen()">Share Screen</button>
-        </div>
-
-        <div class="chat-footer">
-            <input type="text" id="message-input" placeholder="Type your message here">
-            <button onclick="sendMessage()">Send</button>
-            <button onclick="sendFile()">Send File</button>
+<div class="chat-container">
+    <div class="chat-header">
+        <div>Chat with John</div>
+        <div class="status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <div>Online</div>
         </div>
     </div>
+    <div class="chat-body" id="chatBody">
+        <!-- Messages will be appended here -->
+    </div>
+    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+        John is typing...
+    </div>
+    <div class="chat-footer">
+        <button class="emoji-picker" onclick="pickEmoji()">😊</button>
+        <input type="text" id="messageInput" placeholder="Type a message..." oninput="showTypingIndicator()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
-    <script>
-        function setTheme(theme) {
-            document.getElementById('app-container').className = `container ${theme}`;
+<script>
+    const statusIndicator = document.getElementById('statusIndicator');
+    const chatBody = document.getElementById('chatBody');
+    const messageInput = document.getElementById('messageInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    let typingTimeout;
+
+    function sendMessage() {
+        const message = messageInput.value;
+        if (message.trim() === '') return;
+        appendMessage(message, 'sent');
+        messageInput.value = '';
+        hideTypingIndicator();
+    }
+
+    function appendMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        messageDiv.innerHTML = `${message}<div class="timestamp">${new Date().toLocaleTimeString()}</div>`;
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        clearTimeout(typingTimeout);
+        typingIndicator.style.display = 'block';
+        typingTimeout = setTimeout(hideTypingIndicator, 1000);
+    }
+
+    function hideTypingIndicator() {
+        typingIndicator.style.display = 'none';
+    }
+
+    function pickEmoji() {
+        const emoji = prompt("Choose an emoji: 😊, 😂, 😎, 😍");
+        if (emoji) {
+            messageInput.value += emoji;
         }
+    }
+</script>
 
-        function updateStatus() {
-            const statusInput = document.getElementById('status-input').value;
-            document.getElementById('user-status').textContent = `Status: ${statusInput}`;
-        }
-
-        function toggleOnlineStatus() {
-            const onlineStatus = document.getElementById('online-status');
-            if (onlineStatus.textContent === 'Online') {
-                onlineStatus.textContent = 'Offline';
-            } else {
-                onlineStatus.textContent = 'Online';
-            }
-        }
-
-        function sendMessage() {
-            const messageInput = document.getElementById('message-input').value;
-            const chatBox = document.getElementById('chat-box');
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            messageDiv.textContent = messageInput;
-
-            const timestampDiv = document.createElement('div');
-            timestampDiv.className = 'timestamp';
-            timestampDiv.textContent = new Date().toLocaleTimeString();
-
-            const readReceiptDiv = document.createElement('div');
-            readReceiptDiv.className = 'read-receipt';
-            readReceiptDiv.textContent = 'Sent';
-
-            messageDiv.appendChild(timestampDiv);
-            messageDiv.appendChild(readReceiptDiv);
-            chatBox.appendChild(messageDiv);
-
-            document.getElementById('message-input').value = '';
-        }
-
-        function sendFile() {
-            alert('File sent!');
-        }
-
-        function searchContacts() {
-            alert('Search initiated!');
-        }
-
-        function toggleScheduleMessage() {
-            document.getElementById('schedule-message').style.display = 'block';
-        }
-
-        function scheduleMessage() {
-            alert('Message scheduled!');
-        }
-
-        function toggleAutoDeleteMessage() {
-            document.getElementById('auto-delete-message').style.display = 'block';
-        }
-
-        function setAutoDelete() {
-            alert('Auto-delete set!');
-        }
-
-        function toggleSmartReply() {
-            document.getElementById('smart-reply').style.display = 'block';
-        }
-
-        function sendSmartReply() {
-            alert('Smart reply sent!');
-        }
-
-        function toggleVoiceToText() {
-            document.getElementById('voice-to-text').style.display = 'block';
-        }
-
-        function convertVoiceToText() {
-            alert('Voice converted to text!');
-        }
-
-        function toggleTranslateMessage() {
-            document.getElementById('translate-message').style.display = 'block';
-        }
-
-        function translateMessage() {
-            alert('Message translated!');
-        }
-
-        function backupChat() {
-            alert('Chat backed up!');
-        }
-
-        function restoreBackup() {
-            alert('Backup restored!');
-        }
-
-        function startVideoCall() {
-            alert('Video call started!');
-        }
-
-        function stopVideoCall() {
-            alert('Video call ended!');
-        }
-
-        function shareScreen() {
-            alert('Screen sharing started!');
-        }
-
-        function toggleEditDelete() {
-            alert('Edit/Delete options enabled!');
-        }
-    </script>
 </body>
 </html>
