@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Chat App with Invite Feature</title>
     <title>Chat App with Groups and Invites</title>
+    <title>Chat App with Groups, Invites, and Emoji Reactions</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,6 +50,14 @@
             bottom: -15px;
             right: 10px;
         }
+
+        .reaction {
+            position: absolute;
+            bottom: -20px;
+            left: 10px;
+            font-size: 1.2em;
+        }
+
         .input-container {
             display: flex;
             padding: 10px;
@@ -89,16 +97,12 @@
         .clear-chat:hover {
             background-color: #c82333;
         }
-
-        .invite-container {
         .invite-container, .group-container {
             display: flex;
             padding: 10px;
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
         }
-
-        .invite-container input {
         .invite-container input, .group-container input {
             flex-grow: 1;
             padding: 10px;
@@ -106,8 +110,6 @@
             border-radius: 5px;
             outline: none;
         }
-
-        .invite-container button {
         .invite-container button, .group-container button {
             padding: 10px 20px;
             border: none;
@@ -117,10 +119,30 @@
             cursor: pointer;
             margin-left: 10px;
         }
-
-        .invite-container button:hover {
         .invite-container button:hover, .group-container button:hover {
             background-color: #0069d9;
+        }
+
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .emoji-picker span {
+            font-size: 1.5em;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .emoji-picker span:hover {
+            background-color: #ddd;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -144,7 +166,6 @@
             <button onclick="createGroup()">Create Group</button>
         </div>
     </div>
-
     <script>
         let username = prompt("Enter your name:", "You");
         if (username) {
@@ -164,8 +185,17 @@
                 timestamp.classList.add('timestamp');
                 timestamp.textContent = new Date().toLocaleTimeString();
                 messageDiv.appendChild(timestamp);
+
+                const reactionBtn = document.createElement('button');
+                reactionBtn.textContent = "😊";
+                reactionBtn.onclick = function () {
+                    showEmojiPicker(messageDiv);
+                };
+                messageDiv.appendChild(reactionBtn);
+
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
+
                 messageInput.value = '';
                 setTimeout(() => {
                     receiveMessage("Friend", "Hello! This is a reply.");
@@ -181,6 +211,14 @@
             timestamp.classList.add('timestamp');
             timestamp.textContent = new Date().toLocaleTimeString();
             messageDiv.appendChild(timestamp);
+
+            const reactionBtn = document.createElement('button');
+            reactionBtn.textContent = "😊";
+            reactionBtn.onclick = function () {
+                showEmojiPicker(messageDiv);
+            };
+            messageDiv.appendChild(reactionBtn);
+
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -197,7 +235,6 @@
                 alert('Please enter a valid email address.');
             }
         }
-
         function createGroup() {
             const groupName = prompt("Enter group name:");
             if (groupName) {
@@ -212,6 +249,35 @@
             } else {
                 alert("Group creation cancelled.");
             }
+        }
+
+        function showEmojiPicker(messageDiv) {
+            const emojiPicker = document.createElement('div');
+            emojiPicker.classList.add('emoji-picker');
+
+            const emojis = ['😊', '😂', '😍', '😢', '😡', '👍', '👎', '❤️'];
+            emojis.forEach(emoji => {
+                const emojiSpan = document.createElement('span');
+                emojiSpan.textContent = emoji;
+                emojiSpan.onclick = function () {
+                    addReaction(messageDiv, emoji);
+                    emojiPicker.remove();
+                };
+                emojiPicker.appendChild(emojiSpan);
+            });
+
+            messageDiv.appendChild(emojiPicker);
+            emojiPicker.style.display = 'block';
+        }
+
+        function addReaction(messageDiv, emoji) {
+            let reactionDiv = messageDiv.querySelector('.reaction');
+            if (!reactionDiv) {
+                reactionDiv = document.createElement('div');
+                reactionDiv.classList.add('reaction');
+                messageDiv.appendChild(reactionDiv);
+            }
+            reactionDiv.textContent = emoji;
         }
     </script>
 </body>
