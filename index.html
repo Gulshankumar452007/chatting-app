@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Chat App</title>
+    <title>Advanced Chat App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +25,9 @@
             padding: 15px;
             background-color: #007bff;
             color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .chat-box {
             flex: 1;
@@ -108,6 +111,25 @@
         .theme-dark { background-color: #343a40; color: #fff; }
         .theme-blue { background-color: #007bff; color: #fff; }
         .theme-green { background-color: #28a745; color: #fff; }
+        .message-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .message-options button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .schedule-message, .auto-delete-message, .smart-reply {
+            display: none;
+            margin-bottom: 10px;
+        }
+        .voice-to-text, .language-selector, .translate-message {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -161,10 +183,39 @@
             </div>
         </div>
 
+        <div class="message-options">
+            <button onclick="toggleScheduleMessage()">Schedule Message</button>
+            <button onclick="toggleAutoDeleteMessage()">Self-Destruct</button>
+            <button onclick="toggleSmartReply()">Smart Reply</button>
+        </div>
+
+        <div class="schedule-message" id="schedule-message">
+            <input type="datetime-local" id="schedule-time">
+            <button onclick="scheduleMessage()">Set Schedule</button>
+        </div>
+
+        <div class="auto-delete-message" id="auto-delete-message">
+            <input type="number" id="auto-delete-time" placeholder="Time in seconds">
+            <button onclick="setAutoDelete()">Set Auto-Delete</button>
+        </div>
+
+        <div class="smart-reply" id="smart-reply">
+            <p>Suggested Reply: <span id="smart-reply-suggestion">Sounds good!</span></p>
+            <button onclick="sendSmartReply()">Send</button>
+        </div>
+
         <div class="chat-footer">
             <input type="text" id="message-input" placeholder="Type a message">
             <button onclick="sendMessage()">Send</button>
             <button onclick="archiveChat()" class="archive-button">Archive</button>
+        </div>
+
+        <div class="voice-to-text">
+            <button onclick="convertVoiceToText()">Voice to Text</button>
+        </div>
+
+        <div class="translate-message">
+            <button onclick="translateMessage()">Translate Message</button>
         </div>
 
         <div class="auto-reply">
@@ -264,6 +315,44 @@
 
         function archiveChat() {
             alert('Chat archived');
+        }
+
+        function toggleScheduleMessage() {
+            const scheduleMessage = document.getElementById('schedule-message');
+            scheduleMessage.style.display = scheduleMessage.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function scheduleMessage() {
+            const scheduleTime = document.getElementById('schedule-time').value;
+            alert(`Message scheduled for ${scheduleTime}`);
+        }
+
+        function toggleAutoDeleteMessage() {
+            const autoDeleteMessage = document.getElementById('auto-delete-message');
+            autoDeleteMessage.style.display = autoDeleteMessage.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setAutoDelete() {
+            const autoDeleteTime = document.getElementById('auto-delete-time').value;
+            alert(`Message will auto-delete after ${autoDeleteTime} seconds`);
+        }
+
+        function toggleSmartReply() {
+            const smartReply = document.getElementById('smart-reply');
+            smartReply.style.display = smartReply.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function sendSmartReply() {
+            const smartReplySuggestion = document.getElementById('smart-reply-suggestion').textContent;
+            alert(`Smart reply sent: ${smartReplySuggestion}`);
+        }
+
+        function convertVoiceToText() {
+            alert('Voice note converted to text');
+        }
+
+        function translateMessage() {
+            alert('Message translated');
         }
     </script>
 </body>
