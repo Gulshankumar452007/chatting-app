@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Groups and Invites</title>
     <title>Chat App with Groups, Invites, and Emoji Reactions</title>
     <style>
         body {
@@ -50,20 +49,20 @@
             bottom: -15px;
             right: 10px;
         }
-
         .reaction {
             position: absolute;
             bottom: -20px;
             left: 10px;
             font-size: 1.2em;
         }
-
         .input-container {
             display: flex;
             padding: 10px;
             background-color: #f9f9f9;
         }
+
         input[type="text"] {
+        input[type="text"], input[type="email"] {
             flex-grow: 1;
             padding: 10px;
             border: 1px solid #ddd;
@@ -122,7 +121,6 @@
         .invite-container button:hover, .group-container button:hover {
             background-color: #0069d9;
         }
-
         .emoji-picker {
             display: none;
             position: absolute;
@@ -133,13 +131,11 @@
             padding: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         .emoji-picker span {
             font-size: 1.5em;
             cursor: pointer;
             margin: 5px;
         }
-
         .emoji-picker span:hover {
             background-color: #ddd;
             border-radius: 5px;
@@ -160,6 +156,7 @@
         </div>
         <div class="invite-container">
             <input type="email" id="friend-email" placeholder="Enter friend's email">
+            <input type="text" id="friend-name" placeholder="Enter friend's name">
             <button onclick="sendInvite()">Invite Friend</button>
         </div>
         <div class="group-container">
@@ -185,17 +182,14 @@
                 timestamp.classList.add('timestamp');
                 timestamp.textContent = new Date().toLocaleTimeString();
                 messageDiv.appendChild(timestamp);
-
                 const reactionBtn = document.createElement('button');
                 reactionBtn.textContent = "😊";
                 reactionBtn.onclick = function () {
                     showEmojiPicker(messageDiv);
                 };
                 messageDiv.appendChild(reactionBtn);
-
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
-
                 messageInput.value = '';
                 setTimeout(() => {
                     receiveMessage("Friend", "Hello! This is a reply.");
@@ -211,14 +205,12 @@
             timestamp.classList.add('timestamp');
             timestamp.textContent = new Date().toLocaleTimeString();
             messageDiv.appendChild(timestamp);
-
             const reactionBtn = document.createElement('button');
             reactionBtn.textContent = "😊";
             reactionBtn.onclick = function () {
                 showEmojiPicker(messageDiv);
             };
             messageDiv.appendChild(reactionBtn);
-
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -226,15 +218,22 @@
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
         }
+
         function sendInvite() {
             const friendEmail = document.getElementById('friend-email').value.trim();
             if (friendEmail !== '') {
                 alert(`An invite has been sent to ${friendEmail}`);
+            const friendName = document.getElementById('friend-name').value.trim();
+            if (friendEmail !== '' && friendName !== '') {
+                alert(`An invite has been sent to ${friendName} (${friendEmail})`);
                 document.getElementById('friend-email').value = '';
+                document.getElementById('friend-name').value = '';
             } else {
                 alert('Please enter a valid email address.');
+                alert('Please enter both a valid email address and a name.');
             }
         }
+
         function createGroup() {
             const groupName = prompt("Enter group name:");
             if (groupName) {
@@ -250,11 +249,9 @@
                 alert("Group creation cancelled.");
             }
         }
-
         function showEmojiPicker(messageDiv) {
             const emojiPicker = document.createElement('div');
             emojiPicker.classList.add('emoji-picker');
-
             const emojis = ['😊', '😂', '😍', '😢', '😡', '👍', '👎', '❤️'];
             emojis.forEach(emoji => {
                 const emojiSpan = document.createElement('span');
@@ -265,11 +262,9 @@
                 };
                 emojiPicker.appendChild(emojiSpan);
             });
-
             messageDiv.appendChild(emojiPicker);
             emojiPicker.style.display = 'block';
         }
-
         function addReaction(messageDiv, emoji) {
             let reactionDiv = messageDiv.querySelector('.reaction');
             if (!reactionDiv) {
