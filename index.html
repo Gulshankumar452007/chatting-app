@@ -56,11 +56,6 @@
             bottom: -15px;
             right: 10px;
         }
-        .message input {
-            margin: 0;
-            padding: 5px;
-            width: calc(100% - 50px);
-        }
         .read-receipt {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.7);
@@ -129,6 +124,11 @@
         }
         .voice-to-text, .language-selector, .translate-message {
             margin-bottom: 10px;
+        }
+        .backup-container {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -202,6 +202,11 @@
         <div class="smart-reply" id="smart-reply">
             <p>Suggested Reply: <span id="smart-reply-suggestion">Sounds good!</span></p>
             <button onclick="sendSmartReply()">Send</button>
+        </div>
+
+        <div class="backup-container">
+            <button onclick="backupChat()">Backup Chat</button>
+            <button onclick="restoreChat()">Restore Chat</button>
         </div>
 
         <div class="chat-footer">
@@ -316,7 +321,6 @@
         function archiveChat() {
             alert('Chat archived');
         }
-
         function toggleScheduleMessage() {
             const scheduleMessage = document.getElementById('schedule-message');
             scheduleMessage.style.display = scheduleMessage.style.display === 'none' ? 'block' : 'none';
@@ -353,6 +357,14 @@
 
         function translateMessage() {
             alert('Message translated');
+        }
+
+        function backupChat() {
+            alert('Chat backup initiated');
+        }
+
+        function restoreChat() {
+            alert('Chat backup restored');
         }
     </script>
 </body>
