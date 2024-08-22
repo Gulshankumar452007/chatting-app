@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App with Typing Indicators</title>
     <title>Chat App with Typing Indicators and Read Receipts</title>
+    <title>Chat App with Features</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -62,8 +62,6 @@
         .message.user {
             background-color: #dcf8c6;
         }
-
-        .timestamp, .status {
         .timestamp, .status, .read-receipt {
             font-size: 12px;
             color: #888;
@@ -97,6 +95,16 @@
             margin-top: 5px;
             display: none;
         }
+
+        .online-status {
+            font-size: 14px;
+            color: #28a745;
+        }
+
+        .offline-status {
+            font-size: 14px;
+            color: #888;
+        }
     </style>
 </head>
 <body>
@@ -104,11 +112,15 @@
         <div class="chat-header">
             <h2 id="chat-title">Chat with John Doe</h2>
             <span id="user-status">Status: Available</span>
+            <span id="online-status" class="online-status">Online</span>
         </div>
+
         <div class="status-container">
             <input type="text" id="status-input" placeholder="Update your status...">
             <button onclick="updateStatus()">Set Status</button>
+            <button onclick="toggleOnlineStatus()">Toggle Online Status</button>
         </div>
+
         <div class="chat-box" id="chat-box">
             <div id="typing-indicator" class="typing-indicator">User is typing...</div>
         </div>
@@ -129,8 +141,11 @@
             <button onclick="startGroupVideoCall()">Start Group Video Call</button>
         </div>
     </div>
+
     <script>
         let typingTimeout;
+        let onlineStatus = true; // User is online by default
+
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
             const messageText = messageInput.value.trim();
@@ -143,24 +158,19 @@
                 timestamp.classList.add('timestamp');
                 timestamp.textContent = new Date().toLocaleTimeString();
                 messageDiv.appendChild(timestamp);
-
                 const readReceipt = document.createElement('div');
                 readReceipt.classList.add('read-receipt');
                 readReceipt.textContent = 'Delivered';
                 messageDiv.appendChild(readReceipt);
-
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
                 messageInput.value = '';
-
                 hideTypingIndicator();
-
                 setTimeout(() => {
                     readReceipt.textContent = 'Read';
                 }, 2000);
             }
         }
-
         function showTypingIndicator() {
             const typingIndicator = document.getElementById('typing-indicator');
             typingIndicator.style.display = 'block';
@@ -196,6 +206,21 @@
                 alert('Please enter a status.');
             }
         }
+
+        function toggleOnlineStatus() {
+            const onlineStatusElement = document.getElementById('online-status');
+            onlineStatus = !onlineStatus;
+            if (onlineStatus) {
+                onlineStatusElement.textContent = 'Online';
+                onlineStatusElement.classList.add('online-status');
+                onlineStatusElement.classList.remove('offline-status');
+            } else {
+                onlineStatusElement.textContent = 'Offline';
+                onlineStatusElement.classList.add('offline-status');
+                onlineStatusElement.classList.remove('online-status');
+            }
+        }
+
         function startVoiceCall() {
             alert('Starting a voice call...');
         }
